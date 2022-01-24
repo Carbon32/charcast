@@ -33,8 +33,11 @@ frame = numpy.random.uniform(0, 1, (horizontalRes, verticalRes * 2, 3))
 
 # Sky:
 sky = pygame.image.load('sky/sky.jpg')
-sky = pygame.transform.scale(sky, (360, 100))
 sky = pygame.surfarray.array3d(pygame.transform.scale(sky, (360, verticalRes * 2)))
+
+# Floor: 
+floor = pygame.image.load('floor/floor.jpg')
+floor = pygame.surfarray.array3d(floor)
 
 # Game Window: #
 
@@ -42,23 +45,24 @@ gameWindow = pygame.display.set_mode((screenWidth, screenHeight))
 
 # Game Functions: #
 
-def handleMovement(x, y, rotation):
+def handleMovement(x, y, rotate, fps):
 	if(pygame.key.get_pressed()[ord('q')]):
-		rotation = rotation - 0.1
+		rotate = rotation - 0.001 * fps
 
 	if(pygame.key.get_pressed()[ord('d')]):
-		rotation = rotation + 0.1
+		rotate = rotation + 0.001 * fps
 
 	if(pygame.key.get_pressed()[ord('z')]):
-		x, y = x + numpy.cos(rotation) * 0.1, y + numpy.sin(rotation) * 0.1
+		x, y = x + numpy.cos(rotation) * 0.005  * fps, y + numpy.sin(rotate) * 0.005 * fps
 
 	if(pygame.key.get_pressed()[ord('s')]):
-		x, y = x - numpy.cos(rotation) * 0.1, y - numpy.sin(rotation) * 0.1
+		x, y = x - numpy.cos(rotate) * 0.005 * fps, y - numpy.sin(rotate) * 0.005 * fps
 
-	return x, y, rotation
+	return x, y, rotate
 # Game Loop: #
 
 while(gameRunning):
+	pygame.display.set_caption("FPS: " + str(fpsHandler.get_fps()))
 	for event in pygame.event.get():
 		if(event.type == pygame.QUIT):
 			gameRunning = False
@@ -66,18 +70,16 @@ while(gameRunning):
 	for i in range(horizontalRes):
 		rotationAngle = rotation + numpy.deg2rad(i / modifier - 30)
 		sin, cos, secCos = numpy.sin(rotationAngle), numpy.cos(rotationAngle), numpy.cos(numpy.deg2rad(i / modifier - 30))
-		frame[i][:] = sky[int(numpy.rad2deg(rotationAngle) % 360)][:] / 255
+		frame[i][:] = sky[int(numpy.rad2deg(rotationAngle) % 359)][:] / 255
 		for j in range(verticalRes):
 			n = (verticalRes / (verticalRes - j)) / secCos
 			x, y, = positionX + cos * n, positionY + sin * n
-
-			if(int(x) % 2 == int(y) % 2):
-				frame[i][verticalRes * 2 - j - 1] = [0, 0, 0]
-			else:
-				frame[i][verticalRes * 2 - j - 1] = [1, 1, 1]
+			xx, yy = int(x * 2 % 1 * 100), int(y * 2 % 1 * 100)
+			shadows = 0.2 + 0.8 * (1 - j / verticalRes)
+			frame[i][verticalRes * 2 - j - 1] = shadows*floor[xx][yy] / 255
 
 	# Movement: #
-	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation)
+	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick())
 
 	# Convert & Scale Frames:
 	surface = pygame.surfarray.make_surface(frame * 255)
