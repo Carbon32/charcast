@@ -9,6 +9,7 @@
 
 import pygame
 import numpy 
+from numba import njit
 
 # Pygame Initialization: #
 
@@ -59,6 +60,22 @@ def handleMovement(x, y, rotate, fps):
 		x, y = x - numpy.cos(rotate) * 0.005 * fps, y - numpy.sin(rotate) * 0.005 * fps
 
 	return x, y, rotate
+
+@njit()
+def newFrame(posx, posy, rotate, frame, sky, floor):
+	for i in range(horizontalRes):
+		rotationAngle = rotate + numpy.deg2rad(i / modifier - 30)
+		sin, cos, secCos = numpy.sin(rotationAngle), numpy.cos(rotationAngle), numpy.cos(numpy.deg2rad(i / modifier - 30))
+		frame[i][:] = sky[int(numpy.rad2deg(rotationAngle) % 359)][:] / 255
+		for j in range(verticalRes):
+			n = (verticalRes / (verticalRes - j)) / secCos
+			x, y, = posx + cos * n, posy + sin * n
+			xx, yy = int(x * 2 % 1 * 100), int(y * 2 % 1 * 100)
+			shadows = 0.2 + 0.8 * (1 - j / verticalRes)
+			frame[i][verticalRes * 2 - j - 1] = shadows*floor[xx][yy] / 255
+
+	return frame 
+
 # Game Loop: #
 
 while(gameRunning):
@@ -67,17 +84,7 @@ while(gameRunning):
 		if(event.type == pygame.QUIT):
 			gameRunning = False
 
-	for i in range(horizontalRes):
-		rotationAngle = rotation + numpy.deg2rad(i / modifier - 30)
-		sin, cos, secCos = numpy.sin(rotationAngle), numpy.cos(rotationAngle), numpy.cos(numpy.deg2rad(i / modifier - 30))
-		frame[i][:] = sky[int(numpy.rad2deg(rotationAngle) % 359)][:] / 255
-		for j in range(verticalRes):
-			n = (verticalRes / (verticalRes - j)) / secCos
-			x, y, = positionX + cos * n, positionY + sin * n
-			xx, yy = int(x * 2 % 1 * 100), int(y * 2 % 1 * 100)
-			shadows = 0.2 + 0.8 * (1 - j / verticalRes)
-			frame[i][verticalRes * 2 - j - 1] = shadows*floor[xx][yy] / 255
-
+	frame = newFrame(positionX, positionY, rotation, frame, sky, floor)
 	# Movement: #
 	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick())
 
