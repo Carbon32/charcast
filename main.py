@@ -40,6 +40,16 @@ sky = pygame.surfarray.array3d(pygame.transform.scale(sky, (360, verticalRes * 2
 floor = pygame.image.load('floor/floor.jpg')
 floor = pygame.surfarray.array3d(floor)
 
+# Wall:
+
+wall = pygame.image.load('wall/wall.jpg')
+wall = pygame.surfarray.array3d(wall)
+
+# Map:
+mapSize = 5
+wallSet = numpy.random.choice([0, 0, 0, 1], (mapSize, mapSize))
+wallRGB = numpy.random.uniform(0, 1, (mapSize, mapSize, 3))
+
 # Game Window: #
 
 gameWindow = pygame.display.set_mode((screenWidth, screenHeight))
@@ -62,7 +72,7 @@ def handleMovement(x, y, rotate, fps):
 	return x, y, rotate
 
 @njit()
-def newFrame(posx, posy, rotate, frame, sky, floor):
+def newFrame(posx, posy, rotate, frame, sky, floor, wallSet, mapSize, wallRGB):
 	for i in range(horizontalRes):
 		rotationAngle = rotate + numpy.deg2rad(i / modifier - 30)
 		sin, cos, secCos = numpy.sin(rotationAngle), numpy.cos(rotationAngle), numpy.cos(numpy.deg2rad(i / modifier - 30))
@@ -72,7 +82,17 @@ def newFrame(posx, posy, rotate, frame, sky, floor):
 			x, y, = posx + cos * n, posy + sin * n
 			xx, yy = int(x * 2 % 1 * 100), int(y * 2 % 1 * 100)
 			shadows = 0.2 + 0.8 * (1 - j / verticalRes)
-			frame[i][verticalRes * 2 - j - 1] = shadows*floor[xx][yy] / 255
+			if(wallSet[int(x) % (mapSize - 1)][int(y) % (mapSize - 1)]):
+				wallRes = verticalRes - j
+				if(x % 1 < 0.02 or x % 1 > 0.98):
+					xx = yy
+				yy = numpy.linspace(0, 198, wallRes * 2) % 99
+				color = shadows * wallRGB[int(x) % (mapSize - 1)][int(y) % (mapSize - 1)]
+				for k in range(wallRes * 2):
+					frame[i][verticalRes - wallRes + k] = color * wall[xx][int(yy[k])] / 255
+				break
+			else:
+				frame[i][verticalRes * 2 - j - 1] = shadows * floor[xx][yy] / 255
 
 	return frame 
 
@@ -84,7 +104,7 @@ while(gameRunning):
 		if(event.type == pygame.QUIT):
 			gameRunning = False
 
-	frame = newFrame(positionX, positionY, rotation, frame, sky, floor)
+	frame = newFrame(positionX, positionY, rotation, frame, sky, floor, wallSet, mapSize, wallRGB)
 	# Movement: #
 	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick())
 
