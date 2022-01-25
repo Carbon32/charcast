@@ -46,7 +46,7 @@ wall = pygame.image.load('wall/wall.jpg')
 wall = pygame.surfarray.array3d(wall) / 255
 
 # Map:
-mapSize = 10
+mapSize = 25
 wallSet = numpy.random.choice([0, 0, 0, 1], (mapSize, mapSize))
 wallRGB = numpy.random.uniform(1, 1, (mapSize, mapSize, 3))
 
@@ -56,21 +56,38 @@ gameWindow = pygame.display.set_mode((screenWidth, screenHeight))
 
 # Game Functions: #
 
-def handleMovement(x, y, rotate, fps):
-	
-	if(pygame.key.get_pressed()[ord('q')]):
-		rotate = rotation - 0.001 * fps
+def handleMovement(posx, posy, rotate, fps, wallSet):
+	x = posx
+	y = posy
+	diag = 0
+	if(pygame.mouse.get_focused):
+		playerMouse = pygame.mouse.get_pos()
+		rotate = rotate + numpy.clip((playerMouse[0] - 400) / 200, -0.2, .2)
 
-	if(pygame.key.get_pressed()[ord('d')]):
-		rotate = rotation + 0.001 * fps
+	if pygame.key.get_pressed()[pygame.K_UP] or pygame.key.get_pressed()[ord('z')]:
+		x, y, diag = x + fps * numpy.cos(rotate), y + fps*numpy.sin(rotate), 1
 
-	if(pygame.key.get_pressed()[ord('z')]):
-		x, y = x + numpy.cos(rotation) * 0.005  * fps, y + numpy.sin(rotate) * 0.005 * fps
+	elif pygame.key.get_pressed()[pygame.K_DOWN] or pygame.key.get_pressed()[ord('s')]:
+		x, y, diag = x - fps*numpy.cos(rotate), y - fps*numpy.sin(rotate), 1
+        
+	if pygame.key.get_pressed()[pygame.K_LEFT] or pygame.key.get_pressed()[ord('q')]:
+		fps = fps/(diag+1)
+		x, y = x + fps*numpy.sin(rotate), y - fps*numpy.cos(rotate)
+        
+	elif pygame.key.get_pressed()[pygame.K_RIGHT] or pygame.key.get_pressed()[ord('d')]:
+		fps = fps/(diag+1)
+		x, y = x - fps*numpy.sin(rotate), y + fps*numpy.cos(rotate)
 
-	if(pygame.key.get_pressed()[ord('s')]):
-		x, y = x - numpy.cos(rotate) * 0.005 * fps, y - numpy.sin(rotate) * 0.005 * fps
+	if not (wallSet[int(x - 0.2)][int(y)] or wallSet[int(x + 0.2)][int(y)] or wallSet[int(x)][int(y - 0.2)] or wallSet[int(x)][int(y + 0.2)]):
+		posx, posy = x, y
 
-	return x, y, rotate
+	elif not (wallSet[int(posx - 0.2)][int(y)] or wallSet[int(posx + 0.2)][int(y)] or wallSet[int(posx)][int(y - 0.2)] or wallSet[int(posx)][int(y + 0.2)]):
+		posy = y
+
+	elif not (wallSet[int(x - 0.2)][int(posy)] or wallSet[int(x + 0.2)][int(posy)] or wallSet[int(x)][int(posy - 0.2)] or wallSet[int(x)][int(posy + 0.2)]):
+		posx = x
+
+	return posx, posy, rotate
 
 @njit()
 def newFrame(posx, posy, rotate, frame, sky, floor, wallSet, mapSize, wallRGB):
@@ -85,7 +102,7 @@ def newFrame(posx, posy, rotate, frame, sky, floor, wallSet, mapSize, wallRGB):
 		
 		n = abs((x - posx) / cos)
 		wallRes = int(verticalRes / (n * secCos + 0.001))
-		xx = int(y * 3 % 1 * 99)
+		xx = int(x * 3 % 1 * 99)
 		
 		if(x % 1 < 0.02 or x % 1 > 0.98):
 			xx = int(y * 3 % 1 * 99)
@@ -109,6 +126,7 @@ def newFrame(posx, posy, rotate, frame, sky, floor, wallSet, mapSize, wallRGB):
 				frame[i][verticalRes - wallRes + k] = color * wall[xx][int(yy[k])]
 				if(verticalRes + 3 * wallRes - k < verticalRes * 2):
 					frame[i][verticalRes + 3 * wallRes - k] = (frame[i][verticalRes + 3 * wallRes - k] + color * wall[xx][int(yy[k])]) / 2
+		
 		for j in range(verticalRes - wallRes):
 			n = (verticalRes / (verticalRes - j)) / secCos
 			x, y, = posx + cos * n, posy + sin * n
@@ -132,7 +150,8 @@ while(gameRunning):
 
 	frame =  newFrame(positionX, positionY, rotation, frame, sky, floor, wallSet, mapSize, wallRGB)
 	# Movement: #
-	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick())
+	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick() / 500, wallSet)
+	pygame.mouse.set_pos(400, 300)
 
 	# Convert & Scale Frames:
 	surface = pygame.surfarray.make_surface(frame * 255)
@@ -147,5 +166,3 @@ while(gameRunning):
 # Quit: #
 pygame.quit()
 quit()
-
-# 0:08:00
