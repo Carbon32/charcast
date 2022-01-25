@@ -48,7 +48,7 @@ wall = pygame.surfarray.array3d(wall) / 255
 # Map:
 mapSize = 10
 wallSet = numpy.random.choice([0, 0, 0, 1], (mapSize, mapSize))
-wallRGB = numpy.random.uniform(0, 1, (mapSize, mapSize, 3))
+wallRGB = numpy.random.uniform(1, 1, (mapSize, mapSize, 3))
 
 # Game Window: #
 
@@ -57,6 +57,7 @@ gameWindow = pygame.display.set_mode((screenWidth, screenHeight))
 # Game Functions: #
 
 def handleMovement(x, y, rotate, fps):
+	
 	if(pygame.key.get_pressed()[ord('q')]):
 		rotate = rotation - 0.001 * fps
 
@@ -92,18 +93,31 @@ def newFrame(posx, posy, rotate, frame, sky, floor, wallSet, mapSize, wallRGB):
 		shadows = 0.3 + 0.7 * (wallRes / verticalRes)
 		if(shadows > 1):
 			shadows = 1
-		yy = numpy.linspace(0, 297, wallRes * 2) % 99
+		yy = numpy.linspace(0, 3, wallRes * 2) * 99 % 99
+		wallAsh = 0 
+		if(wallSet[int(x - 0.33) % (mapSize - 1)][int(y - 0.33) % (mapSize - 1)]):
+			wallAsh = 1
+
+		if(wallSet[int(x - 0.01) % (mapSize - 1)][int(y - 0.01) % (mapSize - 1)]):
+			shadows, wallAsh = shadows * 0.5, 0
+
 		color = shadows * wallRGB[int(x) % (mapSize - 1)][int(y) % (mapSize - 1)]
 		for k in range(wallRes * 2):
 			if(verticalRes - wallRes + k >= 0 and verticalRes - wallRes + k < 2 * verticalRes):
+				if(wallAsh and 1 - k / (2 * wallRes) < 1 - xx / 99):
+					color, wallAsh = 0.5 * color, 0
 				frame[i][verticalRes - wallRes + k] = color * wall[xx][int(yy[k])]
 				if(verticalRes + 3 * wallRes - k < verticalRes * 2):
-					frame[i][verticalRes - wallRes + k] = color * wall[xx][int(yy[k])]
+					frame[i][verticalRes + 3 * wallRes - k] = (frame[i][verticalRes + 3 * wallRes - k] + color * wall[xx][int(yy[k])]) / 2
 		for j in range(verticalRes - wallRes):
 			n = (verticalRes / (verticalRes - j)) / secCos
 			x, y, = posx + cos * n, posy + sin * n
 			xx, yy = int(x * 2 % 1 * 99), int(y * 2 % 1 * 99)
 			shadows = 0.2 + 0.8 * (1 - j / verticalRes)
+			if(wallSet[int(x - 0.33) % (mapSize - 1)][int(y - 0.33) % (mapSize - 1)]):
+				shadows = shadows * 0.5
+			elif(wallSet[int(x - 0.33) % (mapSize - 1)][int(y - 0.33) % (mapSize - 1)] and y % 1 > x % 1 or wallSet[int(x) % (mapSize - 1)][int(y - 0.33) % (mapSize - 1)] and x % 1 > y % 1):
+				shadows = shadows * 0.5
 			frame[i][verticalRes * 2 - j - 1] = shadows * (floor[xx][yy] + frame[i][verticalRes * 2 - j - 1]) / 2
 	return frame
 
@@ -124,7 +138,7 @@ while(gameRunning):
 	surface = pygame.surfarray.make_surface(frame * 255)
 	surface = pygame.transform.scale(surface, (800, 600))
 
-	# Display Frames:
+	# Display Frames: 
 	gameWindow.blit(surface, (0, 0))
 
 	# Update Display:
@@ -133,3 +147,5 @@ while(gameRunning):
 # Quit: #
 pygame.quit()
 quit()
+
+# 0:08:00
