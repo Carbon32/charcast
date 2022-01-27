@@ -27,7 +27,7 @@ wallSet = numpy.random.choice([0, 0, 0, 0, 1, 1], (mapSize, mapSize))
 wallRGB = numpy.random.uniform(1, 1, (mapSize, mapSize, 3)) # Colors (default: transparent)
 
 @njit()
-def updateFrame(posx, posy, rotate, frame, sky, floor, wall):
+def updateFrame(posx : int, posy : int, rotate : int, frame : numpy.ndarray, sky : numpy.ndarray, floor : numpy.ndarray, wall : numpy.ndarray):
 	for i in range(horizontalRes):
 		# Field of View: 
 		rotationAngle = rotate + numpy.deg2rad(i / modifier - 30)

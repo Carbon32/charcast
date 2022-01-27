@@ -16,7 +16,7 @@ pygame.init()
 # Window: 
 
 class Window():
-	def __init__(self, screen_width, screen_height):
+	def __init__(self, screen_width : int, screen_height : int):
 		self.window = pygame.display.set_mode((screen_width, screen_height))
 		self.gameRunning = True
 

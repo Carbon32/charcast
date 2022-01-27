@@ -15,7 +15,7 @@ pygame.init()
 
 # Variables: #
 
-# Window:
+# Window Variables:
 screenWidth = 800
 screenHeight = 600
 gameRunning = True

@@ -12,7 +12,7 @@ import numpy
 
 # Movement: #
 
-def handleMovement(posx, posy, rotate, fps, wall_set):
+def handleMovement(posx : int, posy : int, rotate : int, fps : float, wall_set : numpy.ndarray):
 	x = posx
 	y = posy
 	diag = 0
