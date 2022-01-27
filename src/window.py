@@ -20,5 +20,5 @@ class Window():
 		self.window = pygame.display.set_mode((screen_width, screen_height))
 		self.gameRunning = True
 
-	def updateDisplay():
+	def updateDisplay(self):
 		pygame.display.update()
