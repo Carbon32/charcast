@@ -33,7 +33,7 @@ def convertToSurface(frame : numpy.ndarray):
 	return surface
 
 def updateWindowTitle(text : str, fps : int):
-	pygame.display.set_caption(text + " (" + str(fps) + ")")
+	pygame.display.set_caption(text + " [" + str(fps) + "]")
 
 def toggleMouseCursorOn():
 	pygame.mouse.set_visible(True)

@@ -3,6 +3,8 @@
 #			     Python Raycasting (Unstable)	    		#
 #			          Developer: Carbon				        #
 #													   		#
+#               No longer under development...				#
+#														    #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 # Imports: #
@@ -16,19 +18,22 @@ from src.functions import *
 # Game Assets: #
 
 # Sky:
-sky = loadGameImage('sky/sky.jpg')
+sky = loadGameImage('sky/sky.png')
 sky = convert3DArray(resizeImage(sky, (360, verticalRes * 2))) / 255
 
 # Floor: 
-floor = loadGameImage('floor/floor.jpg')
+floor = loadGameImage('floor/floor.png')
 floor = convert3DArray(floor) / 255
 
 # Wall:
-wall = loadGameImage('wall/wall.jpg')
+wall = loadGameImage('wall/wall.png')
 wall = convert3DArray(wall) / 255
 
+# Crosshair:
+crosshair = loadGameImage('crosshair/crosshair.png')
+
 # Icon:
-setGameIcon('wall/wall.jpg')
+setGameIcon('wall/wall.png')
 
 # Game Window: #
 
@@ -49,6 +54,7 @@ while(display.gameRunning):
 
 	# Display Frames: 
 	display.draw(surface, (0, 0))
+	display.draw(crosshair, (380, 250))
 
 	# Update Display:
 	display.updateDisplay()
