@@ -55,6 +55,8 @@ while(display.gameRunning):
 	# Display Frames: 
 	display.draw(surface, (0, 0))
 	display.draw(crosshair, (380, 250))
+	drawText(display.window, "Health: 100", (255, 0, 0), 20, 580) # Example
+	drawText(display.window, "Armour: 100", (0, 0, 255), 180, 580) # Example
 
 	# Update Display:
 	display.updateDisplay()

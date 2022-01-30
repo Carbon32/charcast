@@ -43,7 +43,11 @@ def toggleMouseCursorOff():
 
 def resetMousePosition():
 	pygame.mouse.set_pos(400, 300)
-	
+
+def drawText(surface : pygame.Surface, text : str, color : tuple, x : int, y : int):
+	image = pygame.font.SysFont('System', 30).render(text, True, color)
+	surface.blit(image, (x, y))
+
 def destroyGame():
 	pygame.quit()
 	quit()
