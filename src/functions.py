@@ -13,7 +13,7 @@ import numpy
 # Functions: #
 
 def loadGameImage(path : str):
-	image = pygame.image.load(path)
+	image = pygame.image.load(path).convert_alpha()
 	return image
 
 def setGameIcon(image : pygame.Surface):

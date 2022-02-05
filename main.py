@@ -15,6 +15,13 @@ from src.frame import *
 from src.movement import *
 from src.functions import *
 
+# Icon:
+setGameIcon('wall/wall.png')
+
+# Game Window: #
+
+display = Window(screenWidth, screenHeight)
+
 # Game Assets: #
 
 # Sky:
@@ -31,13 +38,6 @@ wall = convert3DArray(wall) / 255
 
 # Crosshair:
 crosshair = loadGameImage('crosshair/crosshair.png')
-
-# Icon:
-setGameIcon('wall/wall.png')
-
-# Game Window: #
-
-display = Window(screenWidth, screenHeight)
 
 # Game Loop: #
 
