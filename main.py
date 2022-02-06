@@ -41,29 +41,33 @@ crosshair = loadGameImage('crosshair/crosshair.png')
 
 # Game Loop: #
 
-while(display.gameRunning):
-	updateWindowTitle("Raycasting: ", fpsHandler.get_fps())
-	toggleMouseCursorOff()
+def main():
+	global positionX, positionY, rotation, frame
+	while(display.gameRunning):
+		updateWindowTitle("Raycasting: ", fpsHandler.get_fps())
+		toggleMouseCursorOff()
 
-	# Create Frame:
-	frame =  updateFrame(positionX, positionY, rotation, frame, sky, floor, wall)
+		# Create Frame:
+		frame =  updateFrame(positionX, positionY, rotation, frame, sky, floor, wall)
 
-	# Convert & Scale Frames:
-	surface = convertToSurface(frame)
-	surface = resizeImage(surface, (800, 600))
+		# Convert & Scale Frames:
+		surface = convertToSurface(frame)
+		surface = resizeImage(surface, (800, 600))
 
-	# Display Frames: 
-	display.draw(surface, (0, 0))
-	display.draw(crosshair, (380, 250))
-	drawText(display.window, "Health: 100", (255, 0, 0), 20, 580) # Example
-	drawText(display.window, "Armour: 100", (0, 0, 255), 180, 580) # Example
+		# Display Frames: 
+		display.draw(surface, (0, 0))
+		display.draw(crosshair, (380, 250))
+		drawText(display.window, "Health: 100", (255, 0, 0), 20, 580) # Example
+		drawText(display.window, "Armour: 100", (0, 0, 255), 180, 580) # Example
 
-	# Update Display:
-	display.updateDisplay()
+		# Update Display:
+		display.updateDisplay()
 
-	# Movement: #
-	positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick() / 500, wallSet)
-	resetMousePosition()
+		# Movement: #
+		positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick() / 500, wallSet)
+		resetMousePosition()
 
-# Quit: #
-destroyGame()
+	# Quit: #
+	destroyGame()
+
+main()

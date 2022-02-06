@@ -7,13 +7,10 @@
 
 # Imports: #
 
-import numpy
-from numba import njit
+import numpy ; from numba import njit
 
 # Floor Casting:
-horizontalRes = 200
-verticalRes = 150
-modifier = horizontalRes / 60
+horizontalRes = 200 ; verticalRes = 150 ; modifier = horizontalRes / 60
 
 # Player:
 positionX, positionY, rotation = 0, 0, 0

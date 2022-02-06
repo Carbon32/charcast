@@ -15,8 +15,4 @@ pygame.init()
 
 # Variables: #
 
-# Window Variables:
-screenWidth = 800
-screenHeight = 600
-gameRunning = True
-fpsHandler = pygame.time.Clock()
+screenWidth = 800 ; screenHeight = 600 ; gameRunning = True ; fpsHandler = pygame.time.Clock()

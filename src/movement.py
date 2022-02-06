@@ -7,15 +7,12 @@
 
 # Imports: #
 
-import pygame
-import numpy
+import pygame ; import numpy
 
 # Movement: #
 
 def handleMovement(posx : int, posy : int, rotate : int, fps : float, wall_set : numpy.ndarray):
-	x = posx
-	y = posy
-	diag = 0
+	x = posx ; y = posy ; diag = 0
 	if(pygame.mouse.get_focused):
 		playerMouse = pygame.mouse.get_pos()
 		rotate = rotate + numpy.clip((playerMouse[0] - 400) / 200, -0.2, .2)

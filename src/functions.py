@@ -7,8 +7,7 @@
 
 # Imports: #
 
-import pygame
-import numpy
+import pygame ; import numpy
 
 # Functions: #
 
