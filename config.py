@@ -26,9 +26,14 @@ tile = 100
 # Raycasting: #
 
 fov = math.pi / 3
-rays = 120
+rays = 300
 maxDepth = 800
 deltaAngle = fov / rays
 distance = rays / (2 * math.tan(fov / 2))
 projection = 3 * distance * tile
 scale = screenWidth // rays
+
+# Mini-map: #
+
+mapScale = 5
+mapTile = tile // mapScale
