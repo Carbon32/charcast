@@ -7,7 +7,7 @@
 
 # Imports: #
 
-import pygame
+from config import *
 
 # Pygame Initialization: #
 
@@ -20,10 +20,14 @@ class Window():
 		self.window = pygame.display.set_mode((screen_width, screen_height))
 		self.gameRunning = True
 
+	def clearWindow(self):
+		self.window.fill((0, 0, 0))
+
 	def draw(self, surface : pygame.Surface, position : int):
 		self.window.blit(surface, position)
 
-	def updateDisplay(self):
+	def updateDisplay(self, fps : int):
+		fpsHandler.tick(fps)
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				self.gameRunning = False

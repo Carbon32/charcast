@@ -1,71 +1,53 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #													   		#
-#			     Python Raycasting (Unstable)	    		#
+#			     Python Raycasting (Remake)	  		  		#
 #			          Developer: Carbon				        #
 #													   		#
-#               No longer under development...				#
 #														    #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 # Imports: #
 
+from config import *
 from src.window import *
-from src.variables import *
-from src.frame import *
-from src.movement import *
 from src.functions import *
+from src.player import *
+from src.map import *
+from src.raycasting import *
 
-# Icon:
-setGameIcon('wall/wall.png')
 
 # Game Window: #
 
 display = Window(screenWidth, screenHeight)
+setGameIcon('wall/wall.png')
 
-# Game Assets: #
+# Player: #
 
-# Sky:
-sky = loadGameImage('sky/sky.png')
-sky = convert3DArray(resizeImage(sky, (360, verticalRes * 2))) / 255
-
-# Floor: 
-floor = loadGameImage('floor/floor.png')
-floor = convert3DArray(floor) / 255
-
-# Wall:
-wall = loadGameImage('wall/wall.png')
-wall = convert3DArray(wall) / 255
-
-# Crosshair:
-crosshair = loadGameImage('crosshair/crosshair.png')
+player = Player()
 
 # Game Loop: #
 
 def main():
-	global positionX, positionY, rotation, frame
 	while(display.gameRunning):
 		updateWindowTitle("Raycasting: ", fpsHandler.get_fps())
+		display.clearWindow()
 		toggleMouseCursorOff()
 
-		# Create Frame:
-		frame =  updateFrame(positionX, positionY, rotation, frame, sky, floor, wall)
+		pygame.draw.rect(display.window, (0, 0, 255), (0, 0, screenWidth, screenHeight // 2))
+		pygame.draw.rect(display.window, (120, 120, 0), (0, screenHeight // 2, screenWidth, screenHeight // 2))
 
-		# Convert & Scale Frames:
-		surface = convertToSurface(frame)
-		surface = resizeImage(surface, (800, 600))
+		rayCasting(display.window, player.position, player.angle, worldMap)
+		player.handleMovement()
+		'''pygame.draw.circle(display.window, (255, 0, 0), (int(player.x), int(player.y)), 12)
+		pygame.draw.line(display.window, (255, 0, 0), player.position,   (player.x + screenWidth * math.cos(player.angle), player.y + screenWidth * math.sin(player.angle)))
+		
+		for x, y in worldMap:
+			pygame.draw.rect(display.window, (125, 125, 125), (x, y, tile, tile), 2)
 
-		# Display Frames: 
-		display.draw(surface, (0, 0))
-		display.draw(crosshair, (380, 250))
-		drawText(display.window, "Health: 100", (255, 0, 0), 20, 580) # Example
-		drawText(display.window, "Armour: 100", (0, 0, 255), 180, 580) # Example
+'''
 
 		# Update Display:
-		display.updateDisplay()
-
-		# Movement: #
-		positionX, positionY, rotation = handleMovement(positionX, positionY, rotation, fpsHandler.tick() / 500, wallSet)
-		resetMousePosition()
+		display.updateDisplay(60)
 
 	# Quit: #
 	destroyGame()

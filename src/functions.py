@@ -7,7 +7,7 @@
 
 # Imports: #
 
-import pygame ; import numpy
+from config import *
 
 # Functions: #
 
@@ -23,14 +23,6 @@ def resizeImage(image : pygame.Surface, size : int):
 	scale = pygame.transform.scale(image, (size))
 	return scale
 
-def convert3DArray(image : pygame.Surface):
-	array = pygame.surfarray.array3d(image)
-	return array
-
-def convertToSurface(frame : numpy.ndarray):
-	surface = pygame.surfarray.make_surface(frame * 255)
-	return surface
-
 def updateWindowTitle(text : str, fps : int):
 	pygame.display.set_caption(text + " [" + str(fps) + "]")
 
@@ -39,9 +31,6 @@ def toggleMouseCursorOn():
 
 def toggleMouseCursorOff():
 	pygame.mouse.set_visible(False)
-
-def resetMousePosition():
-	pygame.mouse.set_pos(400, 300)
 
 def drawText(surface : pygame.Surface, text : str, color : tuple, x : int, y : int):
 	image = pygame.font.SysFont('System', 30).render(text, True, color)
