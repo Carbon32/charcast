@@ -35,7 +35,7 @@ def main():
 		display.clearWindow()
 		toggleMouseCursorOff()
 
-		render.drawBackground((0, 180, 255), (69, 69, 69))
+		render.drawBackground((0, 180, 255), (69, 69, 69), player.angle)
 		render.drawWorld(player.position, player.angle, worldMap)
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)

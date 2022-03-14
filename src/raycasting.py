@@ -8,13 +8,14 @@
 # Imports: #
 
 from config import *
+from src.functions import *
 
 # Functions: #
 
 def mapping(x : int, y : int):
 	return (x // tile) * tile, (y // tile) * tile
 
-def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int, gameMap):
+def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int, gameMap, textures):
 	xo, yo = playerPosition
 	xm, ym = mapping(xo, yo)
 	angle = playerAngle - (fov / 2)
@@ -26,23 +27,33 @@ def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int
 		x, dx = (xm + tile, 1) if cosA >= 0 else (xm, -1)
 		for i in range(0, screenWidth, tile):
 			depthVertical = (x - xo) / cosA
-			y = yo + depthVertical * sinA
-			if(mapping(x + dx, y) in gameMap):
+			yv = yo + depthVertical * sinA
+			tileVertical = mapping(x + dx, yv)
+			if(tileVertical in gameMap):
+				textureVertical = gameMap[tileVertical]
 				break
 			x += dx * tile
 
 		y, dy = (ym + tile, 1) if sinA >= 0 else (ym, -1)
 		for j in range(0, screenHeight, tile):
 			depthHorizontal = (y - yo) / sinA
-			x  = xo + depthHorizontal * cosA
-			if(mapping(x, y + dy) in gameMap):
+			xh  = xo + depthHorizontal * cosA
+			tileHorizontal = mapping(xh, y + dy)
+			if( tileHorizontal in gameMap):
+				textureHorizontal = gameMap[tileHorizontal]
 				break
 			y += dy * tile
 
-		depth = depthVertical if depthVertical < depthHorizontal else depthHorizontal
+		depth, offset, texture = (depthVertical, yv, textureVertical)  if depthVertical < depthHorizontal else (depthHorizontal, xh, textureHorizontal)
+		offset = int(offset) % tile
 		depth *= math.cos(playerAngle - angle)
-		projectionHeight = projection / depth
+		depth = max(depth, 0.00001)
+		projectionHeight = min(int(projection / depth), 2 * screenHeight)
 		c = 255 / (1 + depth * depth * 0.0002)
 		color = (c, c // 2, c // 3)
 		pygame.draw.rect(display, color, (ray * scale, (screenHeight // 2) - (projectionHeight // 2), scale, projectionHeight))
+		
+		wallColumn = textures[texture].subsurface(offset * textureScale, 0, textureScale, textureHeight)
+		wallColumn = resizeImage(wallColumn, (scale, projectionHeight))
+		display.blit(wallColumn, (ray * scale, (screenHeight // 2) - (projectionHeight // 2)))
 		angle += deltaAngle

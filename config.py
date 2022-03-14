@@ -23,6 +23,12 @@ playerSpeed = 2
 
 tile = 100
 
+# Textures: #
+
+textureWidth = 1200
+textureHeight = 1200
+textureScale = textureWidth // tile
+
 # Raycasting: #
 
 fov = math.pi / 3
