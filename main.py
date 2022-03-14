@@ -26,7 +26,7 @@ player = Player()
 
 # Draw Elements: #
 
-render = Render(display.window)
+render = Render(display.window, miniMap)
 
 # Game Loop: #
 
@@ -37,8 +37,8 @@ def main():
 
 		render.drawBackground((0, 180, 255), (69, 69, 69))
 		render.drawWorld(player.position, player.angle, worldMap)
-		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 10, 30)
-
+		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
+		render.drawMiniMap(player)
 		player.handleMovement()
 
 		# Update Display:
