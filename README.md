@@ -1,10 +1,7 @@
 # Python Raycasting: 
 
-A ray casting game made with Python, based on Pygame & Numpy. The game code has been optimized using Numba library.
-The game code is split into small scripts including functions, frame, movement, variables and window.
+After developing a Python Raycasting video game (check previous commits) based on Pygame & Numpy, i've discovered that the game lacked a lot of features and ran badly because of bugs and glitches.
 
-The code is for preview purposes, i don't recommand building on-top of it, it's so unstable and full of bugs and glitches.
+I chose to cease the development for a few months but now i'm going to re-make the game (based on the previous code).
 
-I don't think i will be developing this anymore.
-
-Currently the game is unstable and suffers from performance issues.
+I will focus on hunting bugs and unnecessary glitches. The game will be well optimized and will run smoothly.
