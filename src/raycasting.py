@@ -11,23 +11,38 @@ from config import *
 
 # Functions: #
 
-def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int, gameMap):
-	angle = playerAngle - (fov // 2)
-	xo, yo = playerPosition
+def mapping(x : int, y : int):
+	return (x // tile) * tile, (y // tile) * tile
 
+def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int, gameMap):
+	xo, yo = playerPosition
+	xm, ym = mapping(xo, yo)
+	angle = playerAngle - (fov / 2)
+	
 	for ray in range(rays):
 		sinA = math.sin(angle)
 		cosA = math.cos(angle)
-		for depth in range(maxDepth):
-			x = xo + depth * cosA
-			y = yo + depth * sinA
-			# pygame.draw.line(display, (125, 125, 125), playerPosition, (x, y), 2)
-			if(x // tile * tile, y // tile * tile) in gameMap:
-				depth *= math.cos(playerAngle - angle)
-				projectionHeight = projection / depth
-				c = 255 / (1 + depth * depth * 0.0001)
-				color = (c // 2, c, c // 3)
-				pygame.draw.rect(display, color, (ray * scale, (screenHeight // 2) - (projectionHeight // 2), scale, projectionHeight))
-				break
 
+		x, dx = (xm + tile, 1) if cosA >= 0 else (xm, -1)
+		for i in range(0, screenWidth, tile):
+			depthVertical = (x - xo) / cosA
+			y = yo + depthVertical * sinA
+			if(mapping(x + dx, y) in gameMap):
+				break
+			x += dx * tile
+
+		y, dy = (ym + tile, 1) if sinA >= 0 else (ym, -1)
+		for j in range(0, screenHeight, tile):
+			depthHorizontal = (y - yo) / sinA
+			x  = xo + depthHorizontal * cosA
+			if(mapping(x, y + dy) in gameMap):
+				break
+			y += dy * tile
+
+		depth = depthVertical if depthVertical < depthHorizontal else depthHorizontal
+		depth *= math.cos(playerAngle - angle)
+		projectionHeight = projection / depth
+		c = 255 / (1 + depth * depth * 0.0002)
+		color = (c, c // 2, c // 3)
+		pygame.draw.rect(display, color, (ray * scale, (screenHeight // 2) - (projectionHeight // 2), scale, projectionHeight))
 		angle += deltaAngle
