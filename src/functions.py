@@ -12,7 +12,7 @@ from config import *
 # Functions: #
 
 def loadGameImage(path : str):
-	image = pygame.image.load(path).convert()
+	image = pygame.image.load(path).convert_alpha()
 	return image
 
 def setGameIcon(image : pygame.Surface):

@@ -39,6 +39,10 @@ distance = rays / (2 * math.tan(fov / 2))
 projection = 3 * distance * tile
 scale = screenWidth // rays
 
+# Sprites: #
+
+centerRay = rays // 2 - 1
+
 # Mini-map: #
 
 mapScale = 5

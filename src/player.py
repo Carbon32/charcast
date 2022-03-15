@@ -44,3 +44,5 @@ class Player():
 
 		if(pygame.key.get_pressed()[pygame.K_RIGHT]):
 			self.angle += 0.02
+
+		self.angle %= (2 * math.pi)

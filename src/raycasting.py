@@ -15,10 +15,11 @@ from src.functions import *
 def mapping(x : int, y : int):
 	return (x // tile) * tile, (y // tile) * tile
 
-def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int, gameMap, textures):
-	xo, yo = playerPosition
+def rayCasting(player, textures, gameMap):
+	walls = []
+	xo, yo = player.position
 	xm, ym = mapping(xo, yo)
-	angle = playerAngle - (fov / 2)
+	angle = player.angle - (fov / 2)
 	
 	for ray in range(rays):
 		sinA = math.sin(angle)
@@ -46,14 +47,13 @@ def rayCasting(display : pygame.Surface, playerPosition : int, playerAngle : int
 
 		depth, offset, texture = (depthVertical, yv, textureVertical)  if depthVertical < depthHorizontal else (depthHorizontal, xh, textureHorizontal)
 		offset = int(offset) % tile
-		depth *= math.cos(playerAngle - angle)
+		depth *= math.cos(player.angle - angle)
 		depth = max(depth, 0.00001)
 		projectionHeight = min(int(projection / depth), 2 * screenHeight)
-		c = 255 / (1 + depth * depth * 0.0002)
-		color = (c, c // 2, c // 3)
-		pygame.draw.rect(display, color, (ray * scale, (screenHeight // 2) - (projectionHeight // 2), scale, projectionHeight))
 		
 		wallColumn = textures[texture].subsurface(offset * textureScale, 0, textureScale, textureHeight)
 		wallColumn = resizeImage(wallColumn, (scale, projectionHeight))
-		display.blit(wallColumn, (ray * scale, (screenHeight // 2) - (projectionHeight // 2)))
+		wallPositon = (ray * scale, (screenHeight // 2) - projectionHeight // 2)
+		walls.append((depth, wallColumn, wallPositon))
 		angle += deltaAngle
+	return walls

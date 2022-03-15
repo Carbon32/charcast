@@ -31,8 +31,11 @@ class Render():
 		self.display.blit(self.textures['9'], (skyOffset + screenWidth, 0))
 		pygame.draw.rect(self.display, floor, (0, screenHeight // 2, screenWidth, screenHeight // 2))
 
-	def drawWorld(self, playerPosition : int, playerAngle : int, gameMap,):
-		rayCasting(self.display, playerPosition, playerAngle, gameMap, self.textures)
+	def drawWorld(self, worldObjects):
+		for obj in sorted(worldObjects, key = lambda n : n[0], reverse = True):
+			if(obj[0]):
+				_, object, objectPosition = obj
+				self.display.blit(object, objectPosition)
 
 	def drawText(self, text : str, size : int, color : tuple, x : int, y : int):
 		image = pygame.font.SysFont('System', size, bold = True).render(text, True, color)
