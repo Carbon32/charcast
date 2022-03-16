@@ -18,10 +18,11 @@ class Sprite():
 		self.spriteTypes = {
 			'barrel': loadGameImage('sprites/barrel/0.png'),
 			'steve': loadGameImage('sprites/steve/0.png'),
+			'round': [loadGameImage(f'sprites/guy/{i}.png') for i in range(8)]
 		}
 
 		self.objectsList = [
-			Object(self.spriteTypes['steve'], True, (5, 5), -0.7, 0.7),
+            Object(self.spriteTypes['round'], False, (5, 5), -0.7, 0.7),
 		]
 
 class Object():
@@ -32,7 +33,15 @@ class Object():
 		self.height = height
 		self.scale = scale
 
+		if not static:
+			self.spriteAngles = [frozenset(range(i, i + 45)) for i in range(0, 360, 45)]
+			self.spritePositions = {angle: position for angle, position in zip(self.spriteAngles, self.object)}
+
 	def locateObject(self, player, walls):
+		fakeWalls0 = [walls[0] for i in range(100)]
+		fakeWalls1 = [walls[-1] for i in range(100)]
+		fakeWalls = fakeWalls0 + walls + fakeWalls1
+
 		dx, dy = self.x - player.x, self.y - player.y
 		distanceToSprite = math.sqrt(dx ** 2 + dy ** 2)
 
@@ -45,9 +54,20 @@ class Object():
 		currentRay = centerRay + deltaRays
 		distanceToSprite *= math.cos((fov // 2) - currentRay * deltaAngle)
 
-		if(0 <= currentRay <= rays - 1 and distanceToSprite < walls[currentRay][0]):
+		fakeRay = currentRay + 100
+		if(0 <= fakeRay <= rays - 1 + 2 * 100 and distanceToSprite < fakeWalls[fakeRay][0]):
 			projectionHeight = int(projection / distanceToSprite * self.scale)
 			height = (projectionHeight // 2) * self.height
+
+			if not self.static:
+				if theta < 0:
+					theta += (math.pi * 2)
+				theta = 360 - int(math.degrees(theta))
+
+				for angles in self.spriteAngles:
+					if(theta in angles):
+						self.object = self.spritePositions[angles]
+						break
 
 			spritePosition = (currentRay * scale - (projectionHeight // 2), (screenHeight // 2) - ((projectionHeight // 2) + height))
 			sprite = resizeImage(self.object, (projectionHeight, projectionHeight))
