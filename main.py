@@ -44,10 +44,10 @@ def main():
 		render.drawWorld(rayCasting(player, render.textures, worldMap) + [object.locateObject(player, rayCasting(player, render.textures, worldMap)) for object in sprites.objectsList])
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)
-		player.handleMovement()
+		player.handleControl()
 
 		# Update Display:
-		display.updateDisplay(120)
+		display.updateDisplay(60)
 
 	# Quit: #
 	destroyGame()

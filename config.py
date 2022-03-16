@@ -43,7 +43,9 @@ scale = screenWidth // rays
 
 centerRay = rays // 2 - 1
 
-# Mini-map: #
+# Map & Mini-map: #
 
-mapScale = 5
+miniMapScale = 4
+mapScale = 3 * miniMapScale
+miniMapResolution = (192, 128)
 mapTile = tile // mapScale
