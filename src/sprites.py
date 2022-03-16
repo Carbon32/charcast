@@ -11,7 +11,7 @@
 from config import *
 from src.functions import *
 
-# Sprite: #
+# Sprites: #
 
 class Sprite():
 	def __init__(self):
@@ -24,6 +24,8 @@ class Sprite():
 		self.objectsList = [
             Object(self.spriteTypes['round'], False, (5, 5), -0.7, 0.7),
 		]
+
+# Objects: #
 
 class Object():
 	def __init__(self, object, static, position, height, scale):
@@ -74,6 +76,3 @@ class Object():
 			return (distanceToSprite, sprite, spritePosition)
 		else:
 			return (False,)
-
-
-

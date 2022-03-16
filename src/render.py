@@ -25,7 +25,7 @@ class Render():
 		}
 
 	def drawBackground(self, sky : tuple, floor : tuple, playerAngle : int):
-		skyOffset = -5 * math.degrees(playerAngle) % screenWidth
+		skyOffset = -10 * math.degrees(playerAngle) % screenWidth
 		self.display.blit(self.textures['9'], (skyOffset, 0))
 		self.display.blit(self.textures['9'], (skyOffset - screenWidth, 0))
 		self.display.blit(self.textures['9'], (skyOffset + screenWidth, 0))
