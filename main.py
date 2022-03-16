@@ -47,7 +47,7 @@ def main():
 		player.handleMovement()
 
 		# Update Display:
-		display.updateDisplay(60)
+		display.updateDisplay(120)
 
 	# Quit: #
 	destroyGame()

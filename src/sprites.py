@@ -22,7 +22,7 @@ class Sprite():
 		}
 
 		self.objectsList = [
-            Object(self.spriteTypes['round'], False, (5, 5), -0.7, 0.7),
+            Object(self.spriteTypes['round'], False, (10, 10), -0.7, 0.7),
 		]
 
 # Objects: #

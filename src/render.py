@@ -18,17 +18,15 @@ class Render():
 	def __init__(self, display, minimap):
 		self.display = display
 		self.mMap = mMap
-		self.textures = {'1': loadGameImage('textures/wall.jpg'),
-						 '2': loadGameImage('textures/wall2.jpg'),
-						 '3': loadGameImage('textures/wall3.jpg'),
-						 '9': loadGameImage('textures/sky.jpg'),
+		self.textures = {1: loadGameImage('textures/wall.jpg'),
+						 2: loadGameImage('textures/wall2.jpg'),
+						 3: loadGameImage('textures/wall3.jpg'),
+						 9: loadGameImage('textures/sky.jpg'),
 		}
 
 	def drawBackground(self, sky : tuple, floor : tuple, playerAngle : int):
 		skyOffset = -10 * math.degrees(playerAngle) % screenWidth
-		self.display.blit(self.textures['9'], (skyOffset, 0))
-		self.display.blit(self.textures['9'], (skyOffset - screenWidth, 0))
-		self.display.blit(self.textures['9'], (skyOffset + screenWidth, 0))
+		drawSky(self.display, self.textures[9], skyOffset)
 		pygame.draw.rect(self.display, floor, (0, screenHeight // 2, screenWidth, screenHeight // 2))
 
 	def drawWorld(self, worldObjects):
