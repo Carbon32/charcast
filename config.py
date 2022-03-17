@@ -42,6 +42,8 @@ scale = screenWidth // rays
 # Sprites: #
 
 centerRay = rays // 2 - 1
+fakeRays = 100
+fakeRaysRange = rays - 1 + 2 * fakeRays
 
 # Map & Mini-map: #
 

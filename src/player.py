@@ -29,7 +29,6 @@ class Player():
 
 
 	def handleMovement(self):
-		print(self.speed)
 		sinA = math.sin(self.angle)
 		cosA = math.cos(self.angle)
 
