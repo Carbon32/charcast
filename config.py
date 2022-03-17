@@ -7,7 +7,7 @@
 
 # Imports: #
 
-import pygame ; import math
+import pygame ; import math ; from collections import deque
 
 # Window Variables: #
 

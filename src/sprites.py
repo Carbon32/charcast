@@ -15,33 +15,54 @@ from src.functions import *
 
 class Sprite():
 	def __init__(self):
-		self.spriteTypes = {
-			'barrel': loadGameImage('sprites/barrel/0.png'),
-			'steve': loadGameImage('sprites/steve/0.png'),
-			'round': [loadGameImage(f'sprites/guy/{i}.png') for i in range(8)]
+		self.spriteParameters = {
+			'explosion': {
+				'sprite': loadGameImage('sprites/explosion/0.png'),
+				'viewAngles': None,
+				'height': 0.5,
+				'scale': 5.0,
+				'animation': deque(
+					[loadGameImage(f'sprites/explosion/{i}.png') for i in range(18)]),
+				'animationDistance': 1000,
+				'animationSpeed': 2,
+			},
+
+			'rotatingGuy': {
+				'sprite': loadGameImage('sprites/guy/0.png'),
+				'viewAngles': None,
+				'height': 0.5,
+				'scale': 5.0,
+				'animation': deque(
+					[loadGameImage(f'sprites/guy/{i}.png') for i in range(8)]),
+				'animationDistance': 1000,
+				'animationSpeed': 10,
+			},
 		}
 
 		self.objectsList = [
-            Object(self.spriteTypes['round'], False, (10, 10), -0.7, 0.7),
+            Object(self.spriteParameters['explosion'], (10.0, 2.0)),
+            Object(self.spriteParameters['rotatingGuy'], (20.0, 8.0)),
 		]
 
 # Objects: #
 
 class Object():
-	def __init__(self, object, static, position, height, scale):
-		self.object = object
-		self.static = static
+	def __init__(self, parameters, position):
+		self.object = parameters['sprite']
+		self.viewAngles = parameters['viewAngles']
 		self.position = self.x, self.y = position[0] * tile, position[1] * tile
-		self.height = height
-		self.scale = scale
+		self.height = parameters['height']
+		self.scale = parameters['scale']
+		self.animation = parameters['animation']
+		self.animatinDistance = parameters['animationDistance']
+		self.animationSpeed = parameters['animationSpeed']
+		self.animationCount = 0
 
-		if not static:
+		if(self.viewAngles):
 			self.spriteAngles = [frozenset(range(i, i + 45)) for i in range(0, 360, 45)]
 			self.spritePositions = {angle: position for angle, position in zip(self.spriteAngles, self.object)}
 
 	def locateObject(self, player):
-		
-
 		dx, dy = self.x - player.x, self.y - player.y
 		distanceToSprite = math.sqrt(dx ** 2 + dy ** 2)
 
@@ -59,7 +80,7 @@ class Object():
 			projectionHeight = min(int(projection / distanceToSprite * self.scale), screenHeight * 2)
 			height = (projectionHeight // 2) * self.height
 
-			if not self.static:
+			if self.viewAngles:
 				if theta < 0:
 					theta += (math.pi * 2)
 				theta = 360 - int(math.degrees(theta))
@@ -69,8 +90,19 @@ class Object():
 						self.object = self.spritePositions[angles]
 						break
 
+			spriteObject = self.object
+			if(self.animation and distanceToSprite < self.animatinDistance):
+				spriteObject = self.animation[0]
+
+				if(self.animationCount < self.animationSpeed):
+					self.animationCount += 1
+
+				else:
+					self.animation.rotate()
+					self.animationCount = 0
+
 			spritePosition = (currentRay * scale - (projectionHeight // 2), (screenHeight // 2) - ((projectionHeight // 2) + height))
-			sprite = resizeImage(self.object, (projectionHeight, projectionHeight))
+			sprite = resizeImage(spriteObject, (projectionHeight, projectionHeight))
 			return (distanceToSprite, sprite, spritePosition)
 		else:
 			return (False,)
