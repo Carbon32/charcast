@@ -8,8 +8,8 @@
 
 # Imports: #
 
-from config import *
-from src.functions import *
+from config import math, deque, tile, deltaAngle, centerRay, fov, fakeRaysRange, projection, screenHeight, scale
+from src.functions import loadGameImage, resizeImage
 
 # Sprites: #
 

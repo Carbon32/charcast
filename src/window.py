@@ -7,7 +7,7 @@
 
 # Imports: #
 
-from config import *
+from config import pygame, fpsHandler
 
 # Pygame Initialization: #
 

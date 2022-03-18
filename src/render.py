@@ -7,10 +7,9 @@
 
 # Imports: #
 
-from config import *
-from src.raycasting import *
-from src.functions import *
-from src.map import *
+from config import pygame, math, screenWidth, screenHeight, mapScale, mapTile
+from src.functions import drawSky, loadGameImage
+from src.map import mMap, miniMap
 
 # Draw: #
 

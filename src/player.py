@@ -7,8 +7,8 @@
 
 # Imports: #
 
-from config import *
-from src.map import *
+from config import pygame, math, playerPosition, playerAngle, playerSpeed, screenWidth, screenHeight
+from src.map import collisionMap
 
 # Player: #
 

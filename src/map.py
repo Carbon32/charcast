@@ -8,7 +8,7 @@
 # Imports: #
 
 from config import *
-from src.functions import *
+from src.functions import processMap
 
 # Text Map: #
 

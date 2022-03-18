@@ -8,14 +8,14 @@
 
 # Imports: #
 
-from config import *
-from src.window import *
-from src.functions import *
-from src.player import *
-from src.map import *
-from src.raycasting import *
-from src.render import *
-from src.sprites import *
+from config import screenWidth, screenHeight, fpsHandler
+from src.window import Window
+from src.functions import toggleMouseCursorOff, destroyGame
+from src.player import Player
+from src.map import miniMap, worldMap
+from src.raycasting import rayCastingWalls
+from src.render import Render
+from src.sprites import Sprite
 
 # Game Window: #
 
@@ -40,10 +40,15 @@ def main():
 		display.clearWindow()
 		toggleMouseCursorOff()
 
+		# Rendering: 
+
 		render.drawBackground((0, 180, 255), (69, 69, 69), player.angle)
-		render.drawWorld(rayCastingWalls(player, render.textures) + [object.locateObject(player) for object in sprites.objectsList])
+		render.drawWorld(rayCastingWalls(player, render.textures, worldMap) + [object.locateObject(player) for object in sprites.objectsList])
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)
+
+		# Movement:
+
 		player.handleControl()
 
 		# Update Display:

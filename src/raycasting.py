@@ -7,9 +7,9 @@
 
 # Imports: #
 
-from config import *
-from src.functions import *
-from src.map import *
+from config import math, njit, fov, rays, tile, projection, screenHeight, deltaAngle, textureScale, textureHeight, scale
+from src.functions import resizeImage
+from src.map import worldWidth, worldHeight
 
 # Functions: #
 
@@ -62,7 +62,7 @@ def rayCasting(playerPosition, playerAngle, worldMap):
 		angle += deltaAngle
 	return castedWalls
 
-def rayCastingWalls(player, textures):
+def rayCastingWalls(player, textures, worldMap):
 	walls = []
 	castedWalls = rayCasting(player.position, player.angle, worldMap)
 	for ray, castedValues in enumerate(castedWalls):
