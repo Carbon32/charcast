@@ -13,12 +13,18 @@ from src.map import *
 
 # Functions: #
 
-def rayCasting(player, textures, gameMap):
-	walls = []
-	xo, yo = player.position
+@njit(fastmath = True)
+def mapping(x : int, y : int):
+	return (x // tile) * tile, (y // tile) * tile
+
+
+@njit(fastmath = True)
+def rayCasting(playerPosition, playerAngle, worldMap):
+	castedWalls = []
+	xo, yo = playerPosition
 	textureVertical, textureHorizontal = 1, 1
 	xm, ym = mapping(xo, yo)
-	angle = player.angle - (fov / 2)
+	angle = playerAngle - (fov / 2)
 	
 	for ray in range(rays):
 		sinA = math.sin(angle)
@@ -31,8 +37,8 @@ def rayCasting(player, textures, gameMap):
 			depthVertical = (x - xo) / cosA
 			yv = yo + depthVertical * sinA
 			tileVertical = mapping(x + dx, yv)
-			if(tileVertical in gameMap):
-				textureVertical = gameMap[tileVertical]
+			if(tileVertical in worldMap):
+				textureVertical = worldMap[tileVertical]
 				break
 			x += dx * tile
 
@@ -41,20 +47,28 @@ def rayCasting(player, textures, gameMap):
 			depthHorizontal = (y - yo) / sinA
 			xh  = xo + depthHorizontal * cosA
 			tileHorizontal = mapping(xh, y + dy)
-			if( tileHorizontal in gameMap):
-				textureHorizontal = gameMap[tileHorizontal]
+			if(tileHorizontal in worldMap):
+				textureHorizontal = worldMap[tileHorizontal]
 				break
 			y += dy * tile
 
 		depth, offset, texture = (depthVertical, yv, textureVertical)  if depthVertical < depthHorizontal else (depthHorizontal, xh, textureHorizontal)
 		offset = int(offset) % tile
-		depth *= math.cos(player.angle - angle)
+		depth *= math.cos(playerAngle - angle)
 		depth = max(depth, 0.00001)
 		projectionHeight = min(int(projection / depth), 2 * (screenHeight * 5))
 		
+		castedWalls.append((depth, offset, projectionHeight, texture))
+		angle += deltaAngle
+	return castedWalls
+
+def rayCastingWalls(player, textures):
+	walls = []
+	castedWalls = rayCasting(player.position, player.angle, worldMap)
+	for ray, castedValues in enumerate(castedWalls):
+		depth, offset, projectionHeight, texture = castedValues
 		wallColumn = textures[texture].subsurface(offset * textureScale, 0, textureScale, textureHeight)
 		wallColumn = resizeImage(wallColumn, (scale, projectionHeight))
 		wallPosition = (ray * scale, (screenHeight // 2) - projectionHeight // 2)
 		walls.append((depth, wallColumn, wallPosition))
-		angle += deltaAngle
 	return walls

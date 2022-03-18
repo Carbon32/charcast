@@ -21,13 +21,13 @@ from src.sprites import *
 
 display = Window(screenWidth, screenHeight, "Raycasting: ")
 
-# Player: #
-
-player = Player()
-
 # Sprites: #
 
 sprites = Sprite()
+
+# Player: #
+
+player = Player(sprites)
 
 # Draw Elements: #
 
@@ -41,13 +41,13 @@ def main():
 		toggleMouseCursorOff()
 
 		render.drawBackground((0, 180, 255), (69, 69, 69), player.angle)
-		render.drawWorld(rayCasting(player, render.textures, worldMap) + [object.locateObject(player) for object in sprites.objectsList])
+		render.drawWorld(rayCastingWalls(player, render.textures) + [object.locateObject(player) for object in sprites.objectsList])
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)
 		player.handleControl()
 
 		# Update Display:
-		display.updateDisplay(60)
+		display.updateDisplay(120)
 
 	# Quit: #
 	destroyGame()

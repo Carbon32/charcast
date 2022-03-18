@@ -16,14 +16,12 @@ def drawSky(surface : pygame.Surface, texture : pygame.Surface, offset : int):
 	surface.blit(texture, (offset - screenWidth, 0))
 	surface.blit(texture, (offset + screenWidth, 0))
 
-def mapping(x : int, y : int):
-	return (x // tile) * tile, (y // tile) * tile
-
-def processMap(matrixMap : list, worldMap : dict, miniMap : set):
+def processMap(matrixMap : list, worldMap : dict, miniMap : set, collisionMap : list):
     for j, row in enumerate(matrixMap):
         for i, character in enumerate(row):
             if(character):
                 miniMap.add((i * mapTile, j * mapTile))
+                collisionMap.append(pygame.Rect(i * tile, j * tile, tile, tile))
                 if(character == 1):
                     worldMap[(i * tile, j * tile)] = 1
 
@@ -32,7 +30,7 @@ def processMap(matrixMap : list, worldMap : dict, miniMap : set):
 
                 elif(character == 3):
                     worldMap[(i * tile, j * tile)] = 3
-    return worldMap, miniMap
+    return worldMap, miniMap, collisionMap
 
 def loadGameImage(path : str):
 	image = pygame.image.load(path).convert_alpha()

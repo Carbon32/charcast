@@ -40,6 +40,7 @@ mMap = pygame.Surface(miniMapResolution)
 worldWidth = len(matrixMap[0]) * tile
 worldHeight = len(matrixMap) * tile
 
-worldMap = {}
+worldMap = Dict.empty(key_type = types.UniTuple(int32, 2), value_type = int32)
 miniMap = set()
-worldMap, miniMap = processMap(matrixMap, worldMap, miniMap)
+collisionMap = []
+worldMap, miniMap, collisionMap = processMap(matrixMap, worldMap, miniMap, collisionMap)

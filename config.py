@@ -7,7 +7,13 @@
 
 # Imports: #
 
-import pygame ; import math ; from collections import deque
+import pygame 
+import math
+from collections import deque
+from numba.core import types
+from numba.typed import Dict
+from numba import int32
+from numba import njit
 
 # Window Variables: #
 

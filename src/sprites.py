@@ -25,23 +25,25 @@ class Sprite():
 					[loadGameImage(f'sprites/explosion/{i}.png') for i in range(18)]),
 				'animationDistance': 1000,
 				'animationSpeed': 2,
+				'collision': False,
 			},
 
-			'rotatingGuy': {
-				'sprite': loadGameImage('sprites/guy/0.png'),
+			'barrel': {
+				'sprite': loadGameImage('sprites/barrel/0.png'),
 				'viewAngles': None,
-				'height': 0.5,
-				'scale': 5.0,
+				'height': 0.0,
+				'scale': 1.0,
 				'animation': deque(
-					[loadGameImage(f'sprites/guy/{i}.png') for i in range(8)]),
-				'animationDistance': 1000,
-				'animationSpeed': 10,
+					[loadGameImage(f'sprites/barrel/{i}.png') for i in range(0)]),
+				'animationDistance': 0,
+				'animationSpeed': 0,
+				'collision': True,
 			},
 		}
 
 		self.objectsList = [
             Object(self.spriteParameters['explosion'], (10.0, 2.0)),
-            Object(self.spriteParameters['rotatingGuy'], (20.0, 8.0)),
+            Object(self.spriteParameters['barrel'], (20.0, 8.0)),
 		]
 
 # Objects: #
@@ -50,13 +52,17 @@ class Object():
 	def __init__(self, parameters, position):
 		self.object = parameters['sprite']
 		self.viewAngles = parameters['viewAngles']
-		self.position = self.x, self.y = position[0] * tile, position[1] * tile
+		self.x, self.y = position[0] * tile, position[1] * tile
 		self.height = parameters['height']
 		self.scale = parameters['scale']
 		self.animation = parameters['animation']
 		self.animatinDistance = parameters['animationDistance']
 		self.animationSpeed = parameters['animationSpeed']
+		self.collision = parameters['collision']
+		self.sideCollision = 30
 		self.animationCount = 0
+		self.position = self.x - self.sideCollision // 2, self.y - self.sideCollision // 2
+
 
 		if(self.viewAngles):
 			self.spriteAngles = [frozenset(range(i, i + 45)) for i in range(0, 360, 45)]
