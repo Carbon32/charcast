@@ -43,10 +43,11 @@ def main():
 		# Rendering: 
 
 		render.drawBackground((0, 180, 255), (69, 69, 69), player.angle)
-		render.drawWorld(rayCastingWalls(player, render.textures, worldMap) + [object.locateObject(player) for object in sprites.objectsList])
+		walls, wallShot = rayCastingWalls(player, render.textures, worldMap)
+		render.drawWorld(walls + [object.locateObject(player) for object in sprites.objectsList])
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)
-		render.drawPlayerWeapon()
+		render.drawPlayerWeapon([wallShot, sprites.spriteShot])
 
 		# Movement:
 

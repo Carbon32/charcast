@@ -7,7 +7,7 @@
 
 # Imports: #
 
-from config import math, njit, fov, rays, tile, projection, screenHeight, deltaAngle, textureScale, textureHeight, scale
+from config import math, njit, fov, rays, tile, projection, screenHeight, deltaAngle, textureScale, textureHeight, scale, centerRay
 from src.functions import resizeImage
 from src.map import worldWidth, worldHeight
 
@@ -65,6 +65,7 @@ def rayCasting(playerPosition, playerAngle, worldMap):
 def rayCastingWalls(player, textures, worldMap):
 	walls = []
 	castedWalls = rayCasting(player.position, player.angle, worldMap)
+	wallShot = castedWalls[centerRay][0], castedWalls[centerRay][2]
 	for ray, castedValues in enumerate(castedWalls):
 		depth, offset, projectionHeight, texture = castedValues
 		if(projectionHeight > screenHeight):
@@ -79,4 +80,4 @@ def rayCastingWalls(player, textures, worldMap):
 			wallColumn = resizeImage(wallColumn, (scale, projectionHeight))
 			wallPosition = (ray * scale, (screenHeight // 2) - projectionHeight // 2)
 		walls.append((depth, wallColumn, wallPosition))
-	return walls
+	return walls, wallShot

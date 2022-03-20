@@ -8,7 +8,7 @@
 # Imports: #
 
 from config import pygame, math, deque, screenWidth, screenHeight, mapScale, mapTile
-from src.functions import drawSky, loadGameImage
+from src.functions import drawSky, loadGameImage, resizeImage
 from src.map import mMap, miniMap
 
 # Draw: #
@@ -35,6 +35,9 @@ class Render():
 		self.shotgunAnimationSpeed = 3
 		self.shotgunAnimationTrigger = True
 
+		self.sfx = deque([loadGameImage(f'sprites/weapon/shotgun/sfx/{i}.png') for i in range(9)])
+		self.sfxLengthCount = 0
+		self.sfxLength = len(self.sfx)
 
 	def drawBackground(self, sky : tuple, floor : tuple, playerAngle : int):
 		skyOffset = -10 * math.degrees(playerAngle) % screenWidth
@@ -60,8 +63,10 @@ class Render():
 			pygame.draw.rect(self.mMap, (0, 150, 150), (x, y, mapTile, mapTile))
 		self.display.blit(self.mMap, (0, 0))
 
-	def drawPlayerWeapon(self):
+	def drawPlayerWeapon(self, shots):
 		if(self.player.shot):
+			self.shotgunProjection = min(shots)[1] // 2
+			self.bulletSFX()
 			shotgunSprite = self.shotgunAnimation[0]
 			self.display.blit(shotgunSprite, self.shotgunPosition)
 			self.shotgunAnimationCount += 1
@@ -73,6 +78,15 @@ class Render():
 			if(self.shotgunLengthCount == self.shotgunLength):
 				self.player.shot = False
 				self.shotgunLengthCount = 0
+				self.sfxLengthCount = 0
 				self.shotgunAnimationTrigger = True
 		else:
 			self.display.blit(self.shotgunModel, self.shotgunPosition)
+
+	def bulletSFX(self):
+		if(self.sfxLengthCount < self.sfxLength):
+			sfx = resizeImage(self.sfx[0], (self.shotgunProjection, self.shotgunProjection))
+			sfxRect = sfx.get_rect()
+			self.display.blit(sfx, ((screenWidth // 2) - sfxRect.w // 2, (screenHeight // 2) - sfxRect.h // 2))
+			self.sfxLengthCount += 1
+			self.sfx.rotate(-1)

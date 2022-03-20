@@ -46,6 +46,10 @@ class Sprite():
             Object(self.spriteParameters['barrel'], (20.0, 8.0)),
 		]
 
+	@property
+	def spriteShot(self):
+		return min([object.isOnFire for object in self.objectsList], default = (float('inf'), 0))
+
 # Objects: #
 
 class Object():
@@ -61,43 +65,54 @@ class Object():
 		self.collision = parameters['collision']
 		self.sideCollision = 30
 		self.animationCount = 0
-		self.position = self.x - self.sideCollision // 2, self.y - self.sideCollision // 2
 
 
 		if(self.viewAngles):
 			self.spriteAngles = [frozenset(range(i, i + 45)) for i in range(0, 360, 45)]
 			self.spritePositions = {angle: position for angle, position in zip(self.spriteAngles, self.object)}
 
+
+	@property
+	def isOnFire(self):
+		if(centerRay - self.sideCollision // 2 < self.currentRay < centerRay + self.sideCollision // 2 and self.collision):
+			return self.distanceToSprite, self.projectionHeight
+		return float('inf'), None
+
+
+	@property
+	def position(self):
+		return self.x - self.sideCollision // 2, self.y - self.sideCollision // 2
+
 	def locateObject(self, player):
 		dx, dy = self.x - player.x, self.y - player.y
-		distanceToSprite = math.sqrt(dx ** 2 + dy ** 2)
+		self.distanceToSprite = math.sqrt(dx ** 2 + dy ** 2)
 
-		theta = math.atan2(dy, dx)
-		gamma = theta - player.angle
+		self.theta = math.atan2(dy, dx)
+		gamma = self.theta - player.angle
 		if(dx > 0 and 180 <= math.degrees(player.angle) <= 360 or dx < 0 and dy < 0):
 			gamma += (math.pi * 2)
 
 		deltaRays = int(gamma / deltaAngle)
-		currentRay = centerRay + deltaRays
-		distanceToSprite *= math.cos((fov // 2) - currentRay * deltaAngle)
+		self.currentRay = centerRay + deltaRays
+		self.distanceToSprite *= math.cos((fov // 2) - self.currentRay * deltaAngle)
 
-		fakeRay = currentRay + 100
-		if(0 <= fakeRay <= fakeRaysRange and distanceToSprite > 30):
-			projectionHeight = min(int(projection / distanceToSprite * self.scale), screenHeight * 2)
-			height = (projectionHeight // 2) * self.height
+		fakeRay = self.currentRay + 100
+		if(0 <= fakeRay <= fakeRaysRange and self.distanceToSprite > 30):
+			self.projectionHeight = min(int(projection / self.distanceToSprite * self.scale), screenHeight * 2)
+			height = (self.projectionHeight // 2) * self.height
 
 			if self.viewAngles:
-				if theta < 0:
-					theta += (math.pi * 2)
-				theta = 360 - int(math.degrees(theta))
+				if self.theta < 0:
+					self.theta += (math.pi * 2)
+				self.theta = 360 - int(math.degrees(self.theta))
 
 				for angles in self.spriteAngles:
-					if(theta in angles):
+					if(self.theta in angles):
 						self.object = self.spritePositions[angles]
 						break
 
 			spriteObject = self.object
-			if(self.animation and distanceToSprite < self.animatinDistance):
+			if(self.animation and self.distanceToSprite < self.animatinDistance):
 				spriteObject = self.animation[0]
 
 				if(self.animationCount < self.animationSpeed):
@@ -107,8 +122,8 @@ class Object():
 					self.animation.rotate()
 					self.animationCount = 0
 
-			spritePosition = (currentRay * scale - (projectionHeight // 2), (screenHeight // 2) - ((projectionHeight // 2) + height))
-			sprite = resizeImage(spriteObject, (projectionHeight, projectionHeight))
-			return (distanceToSprite, sprite, spritePosition)
+			spritePosition = (self.currentRay * scale - (self.projectionHeight // 2), (screenHeight // 2) - ((self.projectionHeight // 2) + height))
+			sprite = resizeImage(spriteObject, (self.projectionHeight, self.projectionHeight))
+			return (self.distanceToSprite, sprite, spritePosition)
 		else:
 			return (False,)
