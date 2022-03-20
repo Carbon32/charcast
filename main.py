@@ -31,7 +31,7 @@ player = Player(sprites)
 
 # Draw Elements: #
 
-render = Render(display.window, miniMap)
+render = Render(display.window, miniMap, player)
 
 # Game Loop: #
 
@@ -46,13 +46,14 @@ def main():
 		render.drawWorld(rayCastingWalls(player, render.textures, worldMap) + [object.locateObject(player) for object in sprites.objectsList])
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)
+		render.drawPlayerWeapon()
 
 		# Movement:
 
 		player.handleControl()
 
 		# Update Display:
-		display.updateDisplay(120)
+		display.updateDisplay(60)
 
 	# Quit: #
 	destroyGame()

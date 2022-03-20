@@ -29,10 +29,6 @@ class Window():
 
 	def updateDisplay(self, fps : int):
 		fpsHandler.tick(fps)
-		for event in pygame.event.get():
-			if(event.type == pygame.QUIT):
-				self.gameRunning = False
-
-			if(pygame.key.get_pressed()[pygame.K_ESCAPE]):
-				self.gameRunning = False
+		if(pygame.key.get_pressed()[pygame.K_ESCAPE]):
+			self.gameRunning = False
 		pygame.display.update()

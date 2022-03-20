@@ -22,12 +22,15 @@ class Player():
 		self.sensitvity = 0.004
 		self.sideCollision = 50
 		self.rect = pygame.Rect(*playerPosition, self.sideCollision, self.sideCollision)
-		self.spritesCollision = [pygame.Rect(*object.position, object.sideCollision, object.sideCollision) for object in self.sprites.objectsList if object.collision]
-		self.collisionList = collisionMap + self.spritesCollision
+		self.shot = False
 
 	@property
 	def position(self):
 		return (self.x, self.y)
+
+	@property
+	def collisionList(self):
+		return collisionMap + [pygame.Rect(*object.position, object.sideCollision, object.sideCollision) for object in self.sprites.objectsList if object.collision]
 
 	def detectCollision(self, dx, dy):
 		nextRect = self.rect.copy()
@@ -98,6 +101,14 @@ class Player():
 			self.sprinting = True
 		else:
 			self.sprinting = False
+
+		for event in pygame.event.get():
+			if(event.type == pygame.QUIT):
+				exit()
+				
+			if(event.type == pygame.MOUSEBUTTONDOWN):
+				if(event.button == True and not self.shot):
+					self.shot = True
 
 	def handleMouse(self):
 		if(pygame.mouse.get_focused()):
