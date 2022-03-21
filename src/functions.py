@@ -36,6 +36,15 @@ def loadGameImage(path : str):
 	image = pygame.image.load(path).convert_alpha()
 	return image
 
+def loadGameSound(path : str):
+	sound = pygame.mixer.Sound(path)
+	return sound
+
+def playMusic(path : str, volume : int):
+	pygame.mixer.music.load(path)
+	pygame.mixer.music.play(volume)
+
+
 def setGameIcon(image : pygame.Surface):
 	icon = pygame.image.load(image)
 	pygame.display.set_icon(icon)

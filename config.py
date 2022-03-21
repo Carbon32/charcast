@@ -9,11 +9,17 @@
 
 import pygame 
 import math
+from pygame import mixer
 from collections import deque
 from numba.core import types
 from numba.typed import Dict
 from numba import int32
 from numba import njit
+
+# Mixer: #
+
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+pygame.mixer.init()
 
 # Window Variables: #
 

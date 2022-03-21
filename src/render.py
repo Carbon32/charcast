@@ -8,7 +8,7 @@
 # Imports: #
 
 from config import pygame, math, deque, screenWidth, screenHeight, mapScale, mapTile
-from src.functions import drawSky, loadGameImage, resizeImage
+from src.functions import drawSky, loadGameImage, resizeImage, loadGameSound
 from src.map import mMap, miniMap
 
 # Draw: #
@@ -34,6 +34,7 @@ class Render():
 		self.shotgunAnimationCount = 0
 		self.shotgunAnimationSpeed = 3
 		self.shotgunAnimationTrigger = True
+		self.shotgunSound = loadGameSound('sounds/shoot.mp3')
 
 		self.sfx = deque([loadGameImage(f'sprites/weapon/shotgun/sfx/{i}.png') for i in range(9)])
 		self.sfxLengthCount = 0
@@ -65,6 +66,8 @@ class Render():
 
 	def drawPlayerWeapon(self, shots):
 		if(self.player.shot):
+			if(not self.shotgunLengthCount):
+				self.shotgunSound.play()
 			self.shotgunProjection = min(shots)[1] // 2
 			self.bulletSFX()
 			shotgunSprite = self.shotgunAnimation[0]

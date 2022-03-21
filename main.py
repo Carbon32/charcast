@@ -38,6 +38,10 @@ render = Render(display.window, miniMap, player)
 
 interaction = Interaction(player, sprites, render)
 
+# Music: #
+
+interaction.playMusic()
+
 # Game Loop: #
 
 def main():
@@ -55,7 +59,7 @@ def main():
 		render.drawPlayerWeapon([wallShot, sprites.spriteShot])
 		interaction.interactionObject()
 		interaction.npcAction()
-		
+
 		# Movement:
 
 		player.handleControl()
