@@ -16,6 +16,7 @@ from src.map import miniMap, worldMap
 from src.raycasting import rayCastingWalls
 from src.render import Render
 from src.sprites import Sprite
+from src.interaction import Interaction
 
 # Game Window: #
 
@@ -33,6 +34,10 @@ player = Player(sprites)
 
 render = Render(display.window, miniMap, player)
 
+# Interaction: #
+
+interaction = Interaction(player, sprites, render)
+
 # Game Loop: #
 
 def main():
@@ -48,7 +53,8 @@ def main():
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player)
 		render.drawPlayerWeapon([wallShot, sprites.spriteShot])
-
+		interaction.interactionObject()
+		interaction.npcAction()
 		# Movement:
 
 		player.handleControl()
