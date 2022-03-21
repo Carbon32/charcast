@@ -55,6 +55,7 @@ def main():
 		render.drawPlayerWeapon([wallShot, sprites.spriteShot])
 		interaction.interactionObject()
 		interaction.npcAction()
+		
 		# Movement:
 
 		player.handleControl()

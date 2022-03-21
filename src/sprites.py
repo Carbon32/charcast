@@ -17,27 +17,44 @@ from src.raycasting import mapping
 class Sprite():
 	def __init__(self):
 		self.spriteParameters = {
-			'enemy': {
-				'sprite': loadGameImage('sprites/enemy/idle/0.png'),
-				'viewAngles': None,
+			'staticEnemy': {
+				'sprite': [loadGameImage(f'sprites/enemy/angles/{i}.png') for i in range(8)],
+				'viewAngles': True,
 				'height': 0.0,
-				'scale': (1.0, 1.0),
+				'scale': (3.0, 2.0),
 				'animation': [],
+				'deathAnimation': [],
+				'isDead': 'immortal',
+				'animationDistance': 0,
+				'animationSpeed': 0,
+				'collision': True,
+				'sideCollision': 0,
+				'type': None,
+				'action': [],
 
+			},
+
+			'movingEnemy': {
+				'sprite': loadGameImage(f'sprites/enemy/angles/0.png'),
+				'viewAngles': False,
+				'height': 0.0,
+				'scale': (3.0, 2.0),
+				'animation': deque(
+					[loadGameImage(f'sprites/enemy/idle/{i}.png') for i in range(3)]),
 				'deathAnimation': deque(
-					[loadGameImage(f'sprites/enemy/death/{i}.png') for i in range(3)]),
+					[loadGameImage(f'sprites/enemy/death/{i}.png') for i in range(5)]),
 				'isDead': None,
 				'animationDistance': 1000,
-				'animationSpeed': 10,
+				'animationSpeed': 20,
 				'collision': True,
 				'sideCollision': 60,
 				'type': 'npc',
 				'action': deque(
-					[loadGameImage(f'sprites/enemy/blink/{i}.png') for i in range(5)]),
+					[loadGameImage(f'sprites/enemy/look/{i}.png') for i in range(3)]),
 
 			},
 
-			'doorA1': {
+			'gate': {
 				'sprite': [loadGameImage(f'sprites/door/{i}.png') for i in range(16)],
 				'viewAngles': True,
 				'height': 0.0,
@@ -54,29 +71,12 @@ class Sprite():
 
 			},
 
-			'doorA2': {
-				'sprite': [loadGameImage(f'sprites/door/{i}.png') for i in range(16)],
-				'viewAngles': True,
-				'height': 0.0,
-				'scale': (2.6, 1.2),
-				'animation': [],
-				'deathAnimation': [],
-				'isDead': 'immortal',
-				'animationDistance': 0,
-				'animationSpeed': 0,
-				'collision': True,
-				'sideCollision': 60,
-				'type': 'doorV',
-				'action': [],
-
-			},
-
 		}
 
 		self.objectsList = [
-            Object(self.spriteParameters['enemy'], (10.0, 10.0)),
-            Object(self.spriteParameters['doorA1'], (7, 7)),
-            Object(self.spriteParameters['doorA2'], (8, 8)),
+            Object(self.spriteParameters['staticEnemy'], (10.0, 10.0)),
+            Object(self.spriteParameters['movingEnemy'], (11.0, 11.0)),
+            Object(self.spriteParameters['gate'], (5, 5)),
 		]
 
 	@property
