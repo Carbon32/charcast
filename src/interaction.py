@@ -11,6 +11,7 @@
 from config import pygame, math, njit, tile
 from src.map import worldMap
 from src.raycasting import mapping
+from src.functions import playMusic
 
 # NPC Rendering: #
 
@@ -86,3 +87,6 @@ class Interaction():
 	def clearWorld(self):
 		deletedObjects = self.sprites.objectsList[:]
 		[self.sprites.objectsList.remove(object) for object in deletedObjects if object.delete]
+
+	def playMusic(self):
+		playMusic('sounds/music.mp3', 10)
