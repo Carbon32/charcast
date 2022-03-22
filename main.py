@@ -8,19 +8,7 @@
 
 # Imports: #
 
-from config import screenWidth, screenHeight, fpsHandler
-from src.window import Window
-from src.functions import toggleMouseCursorOff, destroyGame
-from src.player import Player
-from src.map import miniMap, worldMap
-from src.raycasting import rayCastingWalls
-from src.render import Render
-from src.sprites import Sprite
-from src.interaction import Interaction
-
-# Game Window: #
-
-display = Window(screenWidth, screenHeight, "Raycasting: ")
+from engine import *
 
 # Sprites: #
 
@@ -32,7 +20,7 @@ player = Player(sprites)
 
 # Draw Elements: #
 
-render = Render(display.window, miniMap, player)
+render = Render(window, miniMap, player)
 
 # Interaction: #
 
@@ -45,8 +33,8 @@ interaction = Interaction(player, sprites, render)
 # Game Loop: #
 
 def main():
-	while(display.gameRunning):
-		display.clearWindow()
+	while(engineRunning):
+		clearWindow(window)
 		toggleMouseCursorOff()
 
 		# Rendering: 
@@ -65,9 +53,11 @@ def main():
 		player.handleControl()
 
 		# Update Display:
-		display.updateDisplay(60)
+
+		updateDisplay(60)
 
 	# Quit: #
+	
 	destroyGame()
 
 main()
