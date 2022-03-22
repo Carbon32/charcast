@@ -102,6 +102,9 @@ class Player():
 		else:
 			self.sprinting = False
 
+		if(pygame.key.get_pressed()[pygame.K_p]):
+			print(self.position)
+
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				exit()

@@ -17,40 +17,75 @@ from src.raycasting import mapping
 class Sprite():
 	def __init__(self):
 		self.spriteParameters = {
-			'staticEnemy': {
-				'sprite': [loadGameImage(f'sprites/enemy/angles/{i}.png') for i in range(8)],
-				'viewAngles': True,
-				'height': 0.0,
-				'scale': (3.0, 2.0),
+			'barrel': 
+			{
+				'sprite': loadGameImage('sprites/barrel/model/0.png'),
+				'viewAngles': False,
+				'height': -0.5,
+				'scale': (1.2, 0.8),
 				'animation': [],
-				'deathAnimation': [],
-				'isDead': 'immortal',
+				'deathAnimation': deque ([loadGameImage('sprites/barrel/destroyed/0.png')]),
+				'isDead': None,
 				'animationDistance': 0,
 				'animationSpeed': 0,
 				'collision': True,
-				'sideCollision': 0,
-				'type': None,
+				'sideCollision': 40,
+				'type': 'decoration',
 				'action': [],
 
 			},
 
-			'movingEnemy': {
-				'sprite': loadGameImage(f'sprites/enemy/angles/0.png'),
+			'troll': 
+			{
+				'sprite': [loadGameImage(f'sprites/troll/angles/{i}.png') for i in range(8)],
+				'viewAngles': True,
+				'height': 0.0,
+				'scale': (1.9, 1.7),
+				'animation': [],
+				'deathAnimation': deque ([loadGameImage('sprites/troll/death/0.png')]),
+				'isDead': None,
+				'animationDistance': 0,
+				'animationSpeed': 1,
+				'collision': True,
+				'sideCollision': 60,
+				'type': 'decoration',
+				'action': [],
+
+			},
+
+			'monster': 
+			{
+				'sprite': loadGameImage('sprites/monster/model/0.png'),
 				'viewAngles': False,
 				'height': 0.0,
-				'scale': (3.0, 2.0),
-				'animation': deque(
-					[loadGameImage(f'sprites/enemy/idle/{i}.png') for i in range(3)]),
-				'deathAnimation': deque(
-					[loadGameImage(f'sprites/enemy/death/{i}.png') for i in range(5)]),
+				'scale': (1.8, 1.5),
+				'animation': [],
+				'deathAnimation': deque ([loadGameImage(f'sprites/monster/death/{i}.png') for i in range(6)]),
 				'isDead': None,
-				'animationDistance': 1000,
-				'animationSpeed': 20,
+				'animationDistance': 0,
+				'animationSpeed': 3,
 				'collision': True,
 				'sideCollision': 60,
 				'type': 'npc',
-				'action': deque(
-					[loadGameImage(f'sprites/enemy/look/{i}.png') for i in range(3)]),
+				'action': deque ([loadGameImage('sprites/monster/model/0.png')]),
+
+			},
+
+			'ufo': 
+			{
+				'sprite': loadGameImage('sprites/ufo/model/0.png'),
+				'viewAngles': False,
+				'height': 0.0,
+				'scale': (1.8, 1.5),
+				'animation': [],
+				'deathAnimation': deque ([loadGameImage(f'sprites/ufo/death/{i}.png') for i in range(5)]),
+				'isDead': None,
+				'animationDistance': 0,
+				'animationSpeed': 3,
+				'collision': True,
+				'sideCollision': 60,
+				'type': 'npc',
+				'action': deque ([loadGameImage('sprites/ufo/model/0.png')]),
 
 			},
 
@@ -58,7 +93,7 @@ class Sprite():
 				'sprite': [loadGameImage(f'sprites/door/{i}.png') for i in range(16)],
 				'viewAngles': True,
 				'height': 0.0,
-				'scale': (2.6, 1.2),
+				'scale': (6.0, 1.2),
 				'animation': [],
 				'deathAnimation': [],
 				'isDead': 'immortal',
@@ -74,9 +109,17 @@ class Sprite():
 		}
 
 		self.objectsList = [
-            Object(self.spriteParameters['staticEnemy'], (10.0, 10.0)),
-            Object(self.spriteParameters['movingEnemy'], (11.0, 11.0)),
-            Object(self.spriteParameters['gate'], (5, 5)),
+            Object(self.spriteParameters['barrel'], (2.15, 2.75)),
+            Object(self.spriteParameters['barrel'], (2.15, 2.25)),
+            Object(self.spriteParameters['barrel'], (2.15, 3.10)),
+            Object(self.spriteParameters['troll'], (14.8, 2.40)),
+            Object(self.spriteParameters['monster'], (14.8, 2.40)),
+            Object(self.spriteParameters['monster'], (17.30, 3.49)),
+            Object(self.spriteParameters['monster'], (16.99, 1.41)),
+            Object(self.spriteParameters['ufo'], (15.51, 7.38)),
+            Object(self.spriteParameters['ufo'], (14.94, 7.51)),
+            Object(self.spriteParameters['gate'], (18.12, 2.42)),
+
 		]
 
 	@property

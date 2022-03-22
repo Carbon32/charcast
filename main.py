@@ -40,7 +40,7 @@ interaction = Interaction(player, sprites, render)
 
 # Music: #
 
-interaction.playMusic()
+# interaction.playMusic()
 
 # Game Loop: #
 

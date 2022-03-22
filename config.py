@@ -27,8 +27,8 @@ screenWidth = 1200 ; screenHeight = 800 ; gameRunning = True ; fpsHandler = pyga
 
 # Player Variables: #
 
-playerPosition = (screenWidth // 2, screenHeight // 2)
-playerAngle = 0
+playerPosition = ((screenWidth // 2), (screenHeight // 2) + 100)
+playerAngle = 5
 playerSpeed = 2
 
 # World: #
