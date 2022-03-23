@@ -10,6 +10,7 @@
 try:
 	import pygame 
 	import math
+	import os
 	from pygame import mixer
 	from collections import deque
 	from numba.core import types
@@ -147,6 +148,11 @@ def loadGameImage(path : str):
 	image = pygame.image.load(path).convert_alpha()
 	return image
 
+def loadAnimation(path : str):
+	animation = deque ([loadGameImage(f'{path}{i}.png') for i in range(len(os.listdir(path)))])
+	return animation
+
+
 def loadGameSound(path : str):
 	sound = pygame.mixer.Sound(path)
 	return sound
@@ -174,11 +180,11 @@ def destroyGame():
 	quit()
 
 @njit(fastmath = True)
-def rayCasting(playerPosition, playerAngle, worldMap):
+def rayCasting(playerPosition : tuple, playerAngle : int, worldMap : Dict):
 	castedWalls = []
-	xo, yo = playerPosition
+	playerX, playerY = playerPosition
 	textureVertical, textureHorizontal = 1, 1
-	xm, ym = mapping(xo, yo)
+	xMapping, yMapping = mapping(playerX, playerY)
 	angle = playerAngle - (fov / 2)
 	
 	for ray in range(rays):
@@ -187,27 +193,27 @@ def rayCasting(playerPosition, playerAngle, worldMap):
 		sinA = sinA if sinA else 0.000001
 		cosA = cosA if cosA else 0.000001
 
-		x, dx = (xm + tile, 1) if cosA >= 0 else (xm, -1)
+		x, deltaX = (xMapping + tile, 1) if cosA >= 0 else (xMapping, -1)
 		for i in range(0, worldWidth, tile):
-			depthVertical = (x - xo) / cosA
-			yv = yo + depthVertical * sinA
-			tileVertical = mapping(x + dx, yv)
+			depthVertical = (x - playerX) / cosA
+			yVertical = playerY + depthVertical * sinA
+			tileVertical = mapping(x + deltaX, yVertical)
 			if(tileVertical in worldMap):
 				textureVertical = worldMap[tileVertical]
 				break
-			x += dx * tile
+			x += deltaX * tile
 
-		y, dy = (ym + tile, 1) if sinA >= 0 else (ym, -1)
+		y, deltaY = (yMapping + tile, 1) if sinA >= 0 else (yMapping, -1)
 		for j in range(0, worldHeight, tile):
-			depthHorizontal = (y - yo) / sinA
-			xh  = xo + depthHorizontal * cosA
-			tileHorizontal = mapping(xh, y + dy)
+			depthHorizontal = (y - playerY) / sinA
+			xHorizontal  = playerX + depthHorizontal * cosA
+			tileHorizontal = mapping(xHorizontal, y + deltaY)
 			if(tileHorizontal in worldMap):
 				textureHorizontal = worldMap[tileHorizontal]
 				break
-			y += dy * tile
+			y += deltaY * tile
 
-		depth, offset, texture = (depthVertical, yv, textureVertical)  if depthVertical < depthHorizontal else (depthHorizontal, xh, textureHorizontal)
+		depth, offset, texture = (depthVertical, yVertical, textureVertical)  if depthVertical < depthHorizontal else (depthHorizontal, xHorizontal, textureHorizontal)
 		offset = int(offset) % tile
 		depth *= math.cos(playerAngle - angle)
 		depth = max(depth, 0.00001)
@@ -218,9 +224,9 @@ def rayCasting(playerPosition, playerAngle, worldMap):
 
 	return castedWalls
 
-def rayCastingWalls(player, textures, worldMap):
+def rayCastingWalls(playerPosition : tuple, playerAngle : int, textures : dict, worldMap : Dict):
 	walls = []
-	castedWalls = rayCasting(player.position, player.angle, worldMap)
+	castedWalls = rayCasting(playerPosition, playerAngle, worldMap)
 	wallShot = castedWalls[centerRay][0], castedWalls[centerRay][2]
 
 	for ray, castedValues in enumerate(castedWalls):
@@ -239,15 +245,16 @@ def rayCastingWalls(player, textures, worldMap):
 			wallColumn = textures[texture].subsurface(offset * textureScale, 0, textureScale, textureHeight)
 			wallColumn = resizeImage(wallColumn, (scale, projectionHeight))
 			wallPosition = (ray * scale, (screenHeight // 2) - projectionHeight // 2)
+			
 		walls.append((depth, wallColumn, wallPosition))
 
 	return walls, wallShot
 
 @njit(fastmath = True, cache = True)
-def rayCastingNPC(npcX, npcY, lockedDoors, worldMap, playerPosition):
-	xo, yo = playerPosition
-	xm, ym = mapping(xo, yo)
-	deltaX, deltaY = xo - npcX, yo - npcY
+def rayCastingNPC(npcX : int, npcY : int, worldMap : Dict, playerPosition : tuple):
+	playerX, playerY = playerPosition
+	xMapping, yMapping = mapping(playerX, playerY)
+	deltaX, deltaY = playerX - npcX, playerY - npcY
 	angle = math.atan2(deltaY, deltaX)
 	angle += math.pi
 	
@@ -256,23 +263,23 @@ def rayCastingNPC(npcX, npcY, lockedDoors, worldMap, playerPosition):
 	sinA = sinA if sinA else 0.000001
 	cosA = cosA if cosA else 0.000001
 
-	x, dx = (xm + tile, 1) if cosA >= 0 else (xm, -1)
+	x, deltaX = (xMapping + tile, 1) if cosA >= 0 else (xMapping, -1)
 	for i in range(0, int(abs(deltaX)) // tile):
-		depthVertical = (x - xo) / cosA
-		yv = yo + depthVertical * sinA
-		tileVertical = mapping(x + dx, yv)
-		if(tileVertical in worldMap or tileVertical in lockedDoors):
+		depthVertical = (x - playerX) / cosA
+		yVertical = playerY + depthVertical * sinA
+		tileVertical = mapping(x + deltaX, yVertical)
+		if(tileVertical in worldMap):
 			return False
-		x += dx * tile
+		x += deltaX * tile
 
-	y, dy = (ym + tile, 1) if sinA >= 0 else (ym, -1)
+	y, deltaY = (yMapping + tile, 1) if sinA >= 0 else (yMapping, -1)
 	for j in range(0, int(abs(deltaY)) // tile):
-		depthHorizontal = (y - yo) / sinA
-		xh  = xo + depthHorizontal * cosA
-		tileHorizontal = mapping(xh, y + dy)
-		if(tileHorizontal in worldMap or tileHorizontal in lockedDoors):
+		depthHorizontal = (y - playerY) / sinA
+		xHorizontal  = playerX + depthHorizontal * cosA
+		tileHorizontal = mapping(xHorizontal, y + deltaY)
+		if(tileHorizontal in worldMap):
 			return False
-		y += dy * tile
+		y += deltaY * tile
 
 	return True
 
@@ -283,7 +290,7 @@ worldMap, miniMapCoordinates, collisionMap = processMap(matrixMap, worldMap, min
 # Rendering: #
 
 class Render():
-	def __init__(self, display, minimap, player):
+	def __init__(self, display : pygame.Surface, minimap : pygame.Surface, player):
 		self.display = display
 		self.miniMap = miniMap
 		self.player = player
@@ -294,7 +301,7 @@ class Render():
 		}
 
 		self.shotgunModel = loadGameImage('sprites/weapon/shotgun/idle/0.png')
-		self.shotgunAnimation = deque([loadGameImage(f'sprites/weapon/shotgun/shooting/{i}.png') for i in range(20)])
+		self.shotgunAnimation = deque([loadGameImage(f'sprites/weapon/shotgun/shooting/{i}.png') for i in range(len(os.listdir(f'sprites/weapon/shotgun/shooting')))])
 
 		self.shotgunRect = self.shotgunModel.get_rect()
 		self.shotgunPosition = ((screenWidth // 2) - self.shotgunRect.width // 2, screenHeight - self.shotgunRect.height)
@@ -308,7 +315,7 @@ class Render():
 
 		self.shotgunSound = loadGameSound('sounds/shoot.mp3')
 
-		self.sfx = deque([loadGameImage(f'sprites/weapon/shotgun/sfx/{i}.png') for i in range(9)])
+		self.sfx = deque([loadGameImage(f'sprites/weapon/shotgun/sfx/{i}.png') for i in range(len(os.listdir(f'sprites/weapon/shotgun/sfx')))])
 		self.sfxLengthCount = 0
 		self.sfxLength = len(self.sfx)
 
@@ -337,12 +344,13 @@ class Render():
 			pygame.draw.rect(self.miniMap, (0, 150, 150), (x, y, mapTile, mapTile))
 		self.display.blit(self.miniMap, (0, 0))
 
-	def drawPlayerWeapon(self, shots):
+	def drawPlayerWeapon(self, shots : list):
 		if(self.player.shot):
 
 			if(not self.shotgunAnimationLengthCount):
 
 				self.shotgunSound.play()
+
 			self.shotgunProjection = min(shots)[1] // 2
 			self.bulletSFX()
 			shotgunSprite = self.shotgunAnimation[0]
@@ -388,7 +396,7 @@ class Sprite():
 				'height': -0.5,
 				'scale': (1.2, 0.8),
 				'animation': [],
-				'deathAnimation': deque ([loadGameImage('sprites/barrel/destroyed/0.png')]),
+				'deathAnimation': loadAnimation('sprites/barrel/destroyed/'),
 				'isDead': None,
 				'animationDistance': 0,
 				'animationSpeed': 0,
@@ -401,12 +409,12 @@ class Sprite():
 
 			'troll': 
 			{
-				'sprite': [loadGameImage(f'sprites/troll/angles/{i}.png') for i in range(8)],
+				'sprite': loadAnimation('sprites/troll/angles/'),
 				'viewAngles': True,
 				'height': 0.0,
 				'scale': (1.9, 1.7),
 				'animation': [],
-				'deathAnimation': deque ([loadGameImage('sprites/troll/death/0.png')]),
+				'deathAnimation': loadAnimation('sprites/troll/death/'),
 				'isDead': None,
 				'animationDistance': 0,
 				'animationSpeed': 1,
@@ -424,14 +432,14 @@ class Sprite():
 				'height': 0.0,
 				'scale': (1.8, 1.5),
 				'animation': [],
-				'deathAnimation': deque ([loadGameImage(f'sprites/monster/death/{i}.png') for i in range(6)]),
+				'deathAnimation': loadAnimation('sprites/monster/death/'),
 				'isDead': None,
 				'animationDistance': 0,
 				'animationSpeed': 3,
 				'collision': True,
 				'sideCollision': 60,
 				'type': 'npc',
-				'action': deque ([loadGameImage('sprites/monster/model/0.png')]),
+				'action': loadAnimation('sprites/monster/model/'),
 
 			},
 
@@ -442,31 +450,14 @@ class Sprite():
 				'height': 0.0,
 				'scale': (1.8, 1.5),
 				'animation': [],
-				'deathAnimation': deque ([loadGameImage(f'sprites/ufo/death/{i}.png') for i in range(5)]),
+				'deathAnimation': loadAnimation('sprites/ufo/death/'),
 				'isDead': None,
 				'animationDistance': 0,
 				'animationSpeed': 3,
 				'collision': True,
 				'sideCollision': 60,
 				'type': 'npc',
-				'action': deque ([loadGameImage('sprites/ufo/model/0.png')]),
-
-			},
-
-			'gate': {
-				'sprite': [loadGameImage(f'sprites/door/{i}.png') for i in range(16)],
-				'viewAngles': True,
-				'height': 0.0,
-				'scale': (6.0, 1.2),
-				'animation': [],
-				'deathAnimation': [],
-				'isDead': 'immortal',
-				'animationDistance': 0,
-				'animationSpeed': 0,
-				'collision': True,
-				'sideCollision': 60,
-				'type': 'doorH',
-				'action': [],
+				'action': loadAnimation('sprites/ufo/model/'),
 
 			},
 
@@ -482,26 +473,12 @@ class Sprite():
             Object(self.spriteParameters['monster'], (16.99, 1.41)),
             Object(self.spriteParameters['ufo'], (15.51, 7.38)),
             Object(self.spriteParameters['ufo'], (14.94, 7.51)),
-            Object(self.spriteParameters['gate'], (18.12, 2.42)),
 
 		]
 
 	@property
 	def spriteShot(self):
-		return min([object.isOnFire for object in self.objectsList], default = (float('inf'), 0))
-
-	@property
-	def lockedDoors(self):
-		blockedDoors = Dict.empty(key_type = types.UniTuple(int32, 2), value_type = int32)
-
-		for object in self.objectsList:
-
-			if(object.type in {'doorH', 'doorV'} and object.collision):
-
-				i, j = mapping(object.x, object.y)
-				blockedDoors[(i, j)] = 0
-
-		return blockedDoors
+		return min([object.isShot for object in self.objectsList], default = (float('inf'), 0))
 
 # Objects: #
 
@@ -531,10 +508,6 @@ class Object():
 		self.deathAnimationCount = 0
 		self.npcActionTrigger = False
 
-		self.doorOpenTrigger = False
-		self.doorPreviousPosition = self.y if self.type == 'doorH' else self.x 
-		self.delete = False
-
 		if(self.viewAngles):
 			if(len(self.object)):
 
@@ -546,7 +519,7 @@ class Object():
 
 
 	@property
-	def isOnFire(self):
+	def isShot(self):
 
 		if(centerRay - self.sideCollision // 2 < self.currentRay < centerRay + self.sideCollision // 2 and self.collision):
 
@@ -573,46 +546,29 @@ class Object():
 		self.theta -= 1.4 * gamma
 		deltaRays = int(gamma / deltaAngle)
 		self.currentRay = centerRay + deltaRays
-
-		if(self.type not in {'doorH', 'doorV'}):
-
-			self.distanceToSprite *= math.cos((fov // 2) - self.currentRay * deltaAngle)
-
 		fakeRay = self.currentRay + 100
 
 		if(0 <= fakeRay <= fakeRaysRange and self.distanceToSprite > 30):
 
-			self.projectionHeight = min(int(projection / self.distanceToSprite), screenHeight * 2 if self.type not in {'doorH', 'doorV'} else screenHeight)
+			self.projectionHeight = min(int(projection / self.distanceToSprite), screenHeight * 2)
 			spriteWidth = int(self.projectionHeight * self.scale[0])
 			spriteHeight = int(self.projectionHeight * self.scale[1])
 			halfWidth = spriteWidth // 2
 			halfHeight = spriteHeight // 2
 			height = halfHeight * self.height
 
+			if(self.isDead and self.isDead != 'immortal'):
 
-			if(self.type in {'doorH', 'doorV'}):
+				spriteObject = self.playDeathAnimation()
 
-				if(self.doorOpenTrigger):
+			elif(self.npcActionTrigger):
 
-					self.openDoor()
-
-				self.object = self.visibleSprite()
-				spriteObject = self.spriteAnimation()
+				spriteObject = self.npcDoAction()
 
 			else:
 
-				if(self.isDead and self.isDead != 'immortal'):
-
-					spriteObject = self.playDeathAnimation()
-
-				elif(self.npcActionTrigger):
-
-					spriteObject = self.npcDoAction()
-
-				else:
-
-					self.object = self.visibleSprite()
-					spriteObject = self.spriteAnimation()
+				self.object = self.visibleSprite()
+				spriteObject = self.spriteAnimation()
 
 			spritePosition = (self.currentRay * scale - halfWidth, (screenHeight // 2) - (halfHeight + height))
 			sprite = resizeImage(spriteObject, (spriteWidth, spriteHeight))
@@ -686,21 +642,6 @@ class Object():
 
 		return spriteObject
 
-	def openDoor(self):
-		if(self.type == 'doorH'):
-
-			self.y -= 3
-
-			if(abs(self.y - self.doorPreviousPosition) > tile):
-				self.delete = True
-
-		elif(self.type == 'doorV'):
-
-			self.x -= 3
-
-			if(abs(self.x - self.doorPreviousPosition) > tile):
-				self.delete = True
-
 class Player():
 	def __init__(self, sprites):
 		self.x, self.y = playerPosition
@@ -721,7 +662,7 @@ class Player():
 	def collisionList(self):
 		return collisionMap + [pygame.Rect(*object.position, object.sideCollision, object.sideCollision) for object in self.sprites.objectsList if object.collision]
 
-	def detectCollision(self, dx, dy):
+	def detectCollision(self, dx : int, dy : int):
 		nextRect = self.rect.copy()
 		nextRect.move_ip(dx, dy)
 		hitIndexes = nextRect.collidelistall(self.collisionList)
@@ -845,20 +786,15 @@ class Interaction():
 
 			for object in sorted(self.sprites.objectsList, key = lambda object: object.distanceToSprite):
 
-				if(object.isOnFire[1]):
+				if(object.isShot[1]):
 
 					if(not object.isDead):
 
-						if(rayCastingNPC(object.x, object.y, self.sprites.lockedDoors, worldMap, self.player.position)):
+						if(rayCastingNPC(object.x, object.y, worldMap, self.player.position)):
 
 							object.isDead = True
 							object.collision = False
 							self.render.shotgunAnimationTrigger = False
-
-					if(object.type in {'doorH', 'doorV'} and object.distanceToSprite < tile):
-
-						object.doorOpenTrigger = True
-						object.collision = None
 
 					break
 
@@ -867,7 +803,7 @@ class Interaction():
 
 			if(object.type == 'npc' and not object.isDead):
 
-				if(rayCastingNPC(object.x, object.y, self.sprites.lockedDoors, worldMap, self.player.position)):
+				if(rayCastingNPC(object.x, object.y, worldMap, self.player.position)):
 
 					object.npcActionTrigger = True
 					self.npcMove(object)
@@ -891,3 +827,18 @@ class Interaction():
 
 	def playMusic(self):
 		playMusic('sounds/music.mp3', 10)
+
+
+class Walls():
+	def __init__(self):
+		self.walls = []
+		self.wallShot = ()
+
+	def updateWalls(self, playerPosition : tuple, playerAngle : int, textures : dict, worldMap : Dict):
+		self.walls, self.wallShot = rayCastingWalls(playerPosition, playerAngle, textures, worldMap)
+
+	def wallStatus(self):
+		return self.walls
+
+	def shotWalls(self):
+		return self.wallShot
