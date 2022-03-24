@@ -36,7 +36,7 @@ interaction = Interaction(player, sprites, render)
 
 # Music: #
 
-# interaction.playMusic() # Music Disabled
+interaction.playMusic()
 
 # Game Loop: #
 
@@ -51,11 +51,12 @@ def main():
 
 		# Rendering: 
 
-		render.drawBackground((0, 180, 255), (69, 69, 69), player.angle)
+		render.drawBackground(player.angle)
+		render.drawFloor((10, 5, 5))
 		render.drawWorld(walls.wallStatus() + [object.locateObject(player) for object in sprites.objectsList])
 		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
 		render.drawMiniMap(player, sprites)
-		render.drawPlayerWeapon([walls.shotWalls(), sprites.spriteShot])*
+		render.drawPlayerWeapon([walls.shotWalls(), sprites.spriteShot])
 
 		# Game Interaction: 
 

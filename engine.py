@@ -310,9 +310,11 @@ class Render():
 		self.sfxLengthCount = 0
 		self.sfxLength = len(self.sfx)
 
-	def drawBackground(self, sky : tuple, floor : tuple, playerAngle : int):
+	def drawBackground(self, playerAngle : int):
 		skyOffset = -10 * math.degrees(playerAngle) % screenWidth
 		drawSky(self.display, self.textures[9], skyOffset)
+	
+	def drawFloor(self, floor : tuple):
 		pygame.draw.rect(self.display, floor, (0, screenHeight // 2, screenWidth, screenHeight // 2))
 
 	def drawWorld(self, worldObjects):
