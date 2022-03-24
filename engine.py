@@ -100,7 +100,6 @@ collisionMap = []
 
 window = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption("Raycasting Engine: ")
-engineRunning = True
 
 # Engine Functions: #
 
@@ -845,3 +844,11 @@ class Walls():
 
 	def shotWalls(self):
 		return self.wallShot
+
+class Game():
+	def __init__(self):
+		self.engineRunning = True
+
+	def gameStatus(self):
+		if(pygame.key.get_pressed()[pygame.K_ESCAPE]):
+			self.engineRunning = False
