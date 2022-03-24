@@ -20,21 +20,21 @@ try:
 except ImportError:
 	raise ImportError("The Raycasting Engine couldn't import all of the necessary packages.")
 
-# Engine Variables: #
-
-# Pygame and Mixer Initializations:
+# Pygame and Mixer Initializations #:
 
 pygame.init()
 mixer.init()
 
-# Window Variables:
+# Engine Variables: #
+
+# Window:
 
 screenWidth = 1200
 screenHeight = 800
 engineRunning = True
 fpsHandler = pygame.time.Clock()
 
-# Player Variables:
+# Player:
 
 playerPosition = ((screenWidth // 2), (screenHeight // 2))
 playerAngle = 5
@@ -68,33 +68,25 @@ fakeRaysRange = rays - 1 + 2 * fakeRays
 
 # Map & Mini-map:
 
+matrixMap = [
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+]
+
 miniMapScale = 4
 mapScale = 3 * miniMapScale
-miniMapResolution = (192, 128)
+miniMapResolution = (len(matrixMap[0]) * 8, len(matrixMap) * 8)
 miniMapCoordinates = set()
 mapTile = tile // mapScale
 miniMap = pygame.Surface(miniMapResolution)
 
 # World: 
-
-matrixMap = [
-	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
-    [1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
 
 worldWidth = len(matrixMap[0]) * tile
 worldHeight = len(matrixMap) * tile
@@ -245,7 +237,7 @@ def rayCastingWalls(playerPosition : tuple, playerAngle : int, textures : dict, 
 			wallColumn = textures[texture].subsurface(offset * textureScale, 0, textureScale, textureHeight)
 			wallColumn = resizeImage(wallColumn, (scale, projectionHeight))
 			wallPosition = (ray * scale, (screenHeight // 2) - projectionHeight // 2)
-			
+
 		walls.append((depth, wallColumn, wallPosition))
 
 	return walls, wallShot
@@ -335,10 +327,19 @@ class Render():
 		image = pygame.font.SysFont('System', size, bold = True).render(text, True, color)
 		self.display.blit(image, (x, y))
 
-	def drawMiniMap(self, player):
+	def drawMiniMap(self, player, sprites):
 		self.miniMap.fill((0, 0, 0))
 		mapX, mapY = player.x // mapScale, player.y // mapScale
-		pygame.draw.circle(self.miniMap, (217, 18, 34), (int(mapX), int(mapY)), 5)
+		pygame.draw.circle(self.miniMap, (14, 217, 34), (int(mapX), int(mapY)), 2)
+		for object in sprites.objectsList:
+			if(object.type == 'npc' and not object.isDead):
+				npcX, npcY = object.x // mapScale, object.y // mapScale
+				pygame.draw.circle(self.miniMap, (217, 18, 34), (int(npcX), int(npcY)), 2)
+
+			if(object.type == 'decoration' and not object.isDead):
+				objectX, objectY = object.x // mapScale, object.y // mapScale
+				pygame.draw.rect(self.miniMap, (14, 120, 217), (int(objectX), int(objectY), 4, 4))
+
 
 		for x, y in miniMapCoordinates:
 			pygame.draw.rect(self.miniMap, (0, 150, 150), (x, y, mapTile, mapTile))
@@ -412,7 +413,7 @@ class Sprite():
 				'sprite': loadAnimation('sprites/troll/angles/'),
 				'viewAngles': True,
 				'height': 0.0,
-				'scale': (1.9, 1.7),
+				'scale': (2.1, 1.7),
 				'animation': [],
 				'deathAnimation': loadAnimation('sprites/troll/death/'),
 				'isDead': None,
@@ -430,7 +431,7 @@ class Sprite():
 				'sprite': loadGameImage('sprites/monster/model/0.png'),
 				'viewAngles': False,
 				'height': 0.0,
-				'scale': (1.8, 1.5),
+				'scale': (3.5, 2.5),
 				'animation': [],
 				'deathAnimation': loadAnimation('sprites/monster/death/'),
 				'isDead': None,
@@ -448,7 +449,7 @@ class Sprite():
 				'sprite': loadGameImage('sprites/ufo/model/0.png'),
 				'viewAngles': False,
 				'height': 0.0,
-				'scale': (1.8, 1.5),
+				'scale': (1.4, 1.1),
 				'animation': [],
 				'deathAnimation': loadAnimation('sprites/ufo/death/'),
 				'isDead': None,
@@ -468,11 +469,9 @@ class Sprite():
             Object(self.spriteParameters['barrel'], (2.15, 2.25)),
             Object(self.spriteParameters['barrel'], (2.15, 3.10)),
             Object(self.spriteParameters['troll'], (14.8, 2.40)),
-            Object(self.spriteParameters['monster'], (14.8, 2.40)),
-            Object(self.spriteParameters['monster'], (17.30, 3.49)),
+            Object(self.spriteParameters['ufo'], (14.8, 2.40)),
+            Object(self.spriteParameters['ufo'], (17.30, 3.49)),
             Object(self.spriteParameters['monster'], (16.99, 1.41)),
-            Object(self.spriteParameters['ufo'], (15.51, 7.38)),
-            Object(self.spriteParameters['ufo'], (14.94, 7.51)),
 
 		]
 
@@ -642,6 +641,8 @@ class Object():
 
 		return spriteObject
 
+# Player: #
+
 class Player():
 	def __init__(self, sprites):
 		self.x, self.y = playerPosition
@@ -774,6 +775,8 @@ class Player():
 			difference = pygame.mouse.get_pos()[0] - (screenWidth // 2)
 			pygame.mouse.set_pos((screenWidth // 2, screenHeight // 2))
 			self.angle += difference * self.sensitvity
+
+# Game Interaction: #
 
 class Interaction():
 	def __init__(self, player, sprites, render):
