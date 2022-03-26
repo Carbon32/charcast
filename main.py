@@ -26,6 +26,10 @@ render = Render(window, miniMap, player)
 
 game = Game()
 
+# Menu: #
+
+menu = Menu(window)
+
 # Walls: #
 
 walls = Walls()
@@ -37,44 +41,81 @@ interaction = Interaction(player, sprites, render)
 # Sounds: #
 
 sounds = Sounds()
-sounds.musicStatus = True
-sounds.soundStatus = False
 sounds.playMusic()
 
 # Game Loop: #
 
 def main():
 	while(game.engineRunning):
+
+		# Clear Window:
+
 		clearWindow(window)
-		toggleMouseCursorOff()
 
-		# Update Walls:
+		# User Interface: 
 
-		walls.updateWalls(player.position, player.angle, render.textures, worldMap)
-
-		# Rendering: 
-
-		render.drawBackground(player.angle)
-		render.drawFloor((80, 80, 80))
-		render.drawWorld(walls.wallStatus() + [object.locateObject(player) for object in sprites.objectsList])
-		render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
-		render.drawMiniMap(player, sprites)
-		render.drawPlayerWeapon([walls.shotWalls(), sprites.spriteShot], sounds.soundStatus)
 		render.drawUI(sounds.musicStatus, sounds.soundStatus)
 
-		# Game Interaction: 
+		# Menu: 
 
-		interaction.interactionObject()
-		interaction.npcAction()
+		if(menu.menuStatus):
+			menu.handleMenu(sounds.musicStatus, sounds.soundStatus)
+			if(menu.playButton.render(window)):
 
-		# Game Status:
+				menu.menuStatus = False
+				toggleMouseCursorOff()
 
-		game.gameStatus()
+			if(menu.exitButton.render(window)):
 
-		# Movement:
+				game.engineRunning = False
 
-		player.handleControl()
-		sounds.soundControl()
+			if(menu.musicButton.render(window)):
+
+				if(sounds.musicStatus):
+
+					sounds.musicStatus = False
+					stopMusic()
+
+				else:
+
+					sounds.musicStatus = True
+					sounds.playMusic()
+
+			if(menu.soundButton.render(window)):
+
+				if(sounds.soundStatus):
+
+					sounds.soundStatus = False
+
+				else:
+
+					sounds.soundStatus = True
+
+		else:
+
+			# Update Walls:
+
+			walls.updateWalls(player.position, player.angle, render.textures, worldMap)
+
+			# Rendering: 
+
+			render.drawBackground(player.angle)
+			render.drawFloor((80, 80, 80))
+			render.drawWorld(walls.wallStatus() + [object.locateObject(player) for object in sprites.objectsList])
+			render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
+			render.drawMiniMap(player, sprites)
+			render.drawPlayerWeapon([walls.shotWalls(), sprites.spriteShot], sounds.soundStatus)
+			render.drawUI(sounds.musicStatus, sounds.soundStatus)
+
+			# Game Interaction: 
+
+			interaction.interactionObject()
+			interaction.npcAction()
+			menu.checkMenu()
+
+			# Movement:
+
+			player.handleControl()
 
 		# Update Display:
 		

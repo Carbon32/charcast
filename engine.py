@@ -851,6 +851,8 @@ class Interaction():
 		[self.sprites.objectsList.remove(object) for object in deletedObjects if object.delete]
 
 
+# Walls: #
+
 class Walls():
 	def __init__(self):
 		self.walls = []
@@ -865,49 +867,85 @@ class Walls():
 	def shotWalls(self):
 		return self.wallShot
 
+# Game Status: #
+
 class Game():
 	def __init__(self):
 		self.engineRunning = True
 
-	def gameStatus(self):
-		if(pygame.key.get_pressed()[pygame.K_ESCAPE]):
-			self.engineRunning = False
+# Sound System: #
 
 class Sounds():
 	def __init__(self):
-		self.musicStatus = False
-		self.soundStatus = False
+		self.musicStatus = True
+		self.soundStatus = True
 
 	def playMusic(self):
-		if(self.musicStatus):
-
 			playMusic('sounds/music.mp3', 10)
 
-		else:
+# Menu: #
 
-			stopMusic()
+class Menu():
+	def __init__(self, display : pygame.Surface):
+		self.display = display
+		self.menuStatus = True
+		self.musicButton = Button(screenWidth // 2 + 50, screenHeight // 2 + 300, resizeImage(loadGameImage('textures/musicOn.png'), (32, 32)))
+		self.soundButton = Button(screenWidth // 2 - 50, screenHeight // 2 + 300, resizeImage(loadGameImage('textures/soundOn.png'), (32, 32)))
+		self.playButton = Button(screenWidth // 2 - 140, screenHeight // 2 - 400, resizeImage(loadGameImage('textures/play.png'), (300, 300)))
+		self.exitButton = Button(screenWidth // 2 - 140, screenHeight // 2 - 200, resizeImage(loadGameImage('textures/exit.png'), (300, 300)))
 
-	def soundControl(self): # Temporary, working on game menu
-		if(pygame.key.get_pressed()[pygame.K_F1]):
-			if(self.musicStatus):
+	def handleMenu(self, musicStatus : bool, soundStatus : bool):
+		if(self.menuStatus):
 
-				self.musicStatus = False
-				stopMusic()
+			self.display.blit(resizeImage(loadGameImage('textures/wall.jpg'), (screenWidth, screenHeight)), (0, 0))
 
-			else:
+			if(musicStatus):
 
-				self.musicStatus = True
-				playMusic('sounds/music.mp3', 10)
-
-		if(pygame.key.get_pressed()[pygame.K_F2]):
-
-			if(self.soundStatus):
-
-				self.soundStatus = False
+				self.musicButton = Button(screenWidth // 2 + 50, screenHeight // 2 + 300, resizeImage(loadGameImage('textures/musicOn.png'), (32, 32)))
 
 			else:
 
-				self.soundStatus = True
+				self.musicButton = Button(screenWidth // 2 + 50, screenHeight // 2 + 300, resizeImage(loadGameImage('textures/musicOff.png'), (32, 32)))
 
+			if(soundStatus):
 
+				self.soundButton = Button(screenWidth // 2 - 50, screenHeight // 2 + 300, resizeImage(loadGameImage('textures/soundOn.png'), (32, 32)))
+
+			else:
+
+				self.soundButton = Button(screenWidth // 2 - 50, screenHeight // 2 + 300, resizeImage(loadGameImage('textures/soundOff.png'), (32, 32)))
+
+		for event in pygame.event.get():
+
+			if(event.type == pygame.QUIT):
+
+				exit()
+
+	def checkMenu(self):
+		if(pygame.key.get_pressed()[pygame.K_ESCAPE] and self.menuStatus == False):
+			self.menuStatus = True
+			toggleMouseCursorOn()
+
+# Buttons: #
+
+class Button():
+	def __init__(self, x : int, y : int, image : pygame.Surface):
+		self.image = image
+		self.rect = self.image.get_rect()
+		self.rect.topleft = (x, y)
+		self.clicked = False
+
+	def render(self, display : pygame.Surface):
+		action = False
+		position = pygame.mouse.get_pos()
+		if self.rect.collidepoint(position):
+			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+				action = True
+				self.clicked = True
+
+		if pygame.mouse.get_pressed()[0] == 0:
+			self.clicked = False
+
+		display.blit(self.image, (self.rect.x, self.rect.y))
+		return action
 
