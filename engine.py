@@ -143,7 +143,6 @@ def loadAnimation(path : str):
 	animation = deque ([loadGameImage(f'{path}{i}.png') for i in range(len(os.listdir(path)))])
 	return animation
 
-
 def loadGameSound(path : str):
 	sound = pygame.mixer.Sound(path)
 	return sound
@@ -152,11 +151,14 @@ def playMusic(path : str, volume : int):
 	pygame.mixer.music.load(path)
 	pygame.mixer.music.play(volume)
 
+def stopMusic():
+	pygame.mixer.music.stop()
+
 def setGameIcon(image : pygame.Surface):
 	icon = pygame.image.load(image)
 	pygame.display.set_icon(icon)
 
-def resizeImage(image : pygame.Surface, size : int):
+def resizeImage(image : pygame.Surface, size : tuple):
 	scale = pygame.transform.scale(image, (size))
 	return scale
 
@@ -310,12 +312,29 @@ class Render():
 		self.sfxLengthCount = 0
 		self.sfxLength = len(self.sfx)
 
+		self.soundOn = resizeImage(loadGameImage('textures/soundOn.png'), (32, 32))
+		self.soundOff = resizeImage(loadGameImage('textures/soundOff.png'), (32, 32))
+		self.musicOn = resizeImage(loadGameImage('textures/musicOn.png'), (32, 32))
+		self.musicOff = resizeImage(loadGameImage('textures/musicOff.png'), (32, 32))
+
+
 	def drawBackground(self, playerAngle : int):
 		skyOffset = -10 * math.degrees(playerAngle) % screenWidth
 		drawSky(self.display, self.textures[9], skyOffset)
 	
 	def drawFloor(self, floor : tuple):
 		pygame.draw.rect(self.display, floor, (0, screenHeight // 2, screenWidth, screenHeight // 2))
+
+	def drawUI(self, musicStatus : bool, soundStatus : bool):
+		if(musicStatus):
+			self.display.blit(self.musicOn, (screenWidth // 2, 30))
+		else:
+			self.display.blit(self.musicOff, (screenWidth // 2, 30))
+
+		if(soundStatus):
+			self.display.blit(self.soundOn, (screenWidth // 2 + 80, 30))
+		else:
+			self.display.blit(self.soundOff, (screenWidth // 2 + 80, 30))
 
 	def drawWorld(self, worldObjects):
 		for obj in sorted(worldObjects, key = lambda n : n[0], reverse = True):
@@ -346,12 +365,14 @@ class Render():
 			pygame.draw.rect(self.miniMap, (0, 150, 150), (x, y, mapTile, mapTile))
 		self.display.blit(self.miniMap, (0, 0))
 
-	def drawPlayerWeapon(self, shots : list):
+	def drawPlayerWeapon(self, shots : list, soundStatus : bool):
 		if(self.player.shot):
 
 			if(not self.shotgunAnimationLengthCount):
-
-				self.shotgunSound.play()
+				if(soundStatus):
+					self.shotgunSound.play()
+				else:
+					pass
 
 			self.shotgunProjection = min(shots)[1] // 2
 			self.bulletSFX()
@@ -829,9 +850,6 @@ class Interaction():
 		deletedObjects = self.sprites.objectsList[:]
 		[self.sprites.objectsList.remove(object) for object in deletedObjects if object.delete]
 
-	def playMusic(self):
-		playMusic('sounds/music.mp3', 10)
-
 
 class Walls():
 	def __init__(self):
@@ -854,3 +872,42 @@ class Game():
 	def gameStatus(self):
 		if(pygame.key.get_pressed()[pygame.K_ESCAPE]):
 			self.engineRunning = False
+
+class Sounds():
+	def __init__(self):
+		self.musicStatus = False
+		self.soundStatus = False
+
+	def playMusic(self):
+		if(self.musicStatus):
+
+			playMusic('sounds/music.mp3', 10)
+
+		else:
+
+			stopMusic()
+
+	def soundControl(self): # Temporary, working on game menu
+		if(pygame.key.get_pressed()[pygame.K_F1]):
+			if(self.musicStatus):
+
+				self.musicStatus = False
+				stopMusic()
+
+			else:
+
+				self.musicStatus = True
+				playMusic('sounds/music.mp3', 10)
+
+		if(pygame.key.get_pressed()[pygame.K_F2]):
+
+			if(self.soundStatus):
+
+				self.soundStatus = False
+
+			else:
+
+				self.soundStatus = True
+
+
+
