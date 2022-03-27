@@ -106,6 +106,7 @@ def main():
 			render.drawMiniMap(player, sprites)
 			render.drawPlayerWeapon([walls.shotWalls(), sprites.spriteShot], sounds.soundStatus)
 			render.drawUI(sounds.musicStatus, sounds.soundStatus)
+			render.drawCrosshair()
 
 			# Game Interaction: 
 

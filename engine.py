@@ -317,6 +317,9 @@ class Render():
 		self.musicOn = resizeImage(loadGameImage('textures/musicOn.png'), (32, 32))
 		self.musicOff = resizeImage(loadGameImage('textures/musicOff.png'), (32, 32))
 
+		self.health = resizeImage(loadGameImage('sprites/health/model/health.png'), (70, 64))
+		self.damagedHealth = resizeImage(loadGameImage('sprites/health/model/damaged.png'), (70, 64))
+
 
 	def drawBackground(self, playerAngle : int):
 		skyOffset = -10 * math.degrees(playerAngle) % screenWidth
@@ -327,14 +330,32 @@ class Render():
 
 	def drawUI(self, musicStatus : bool, soundStatus : bool):
 		if(musicStatus):
+
 			self.display.blit(self.musicOn, (screenWidth // 2, 30))
+
 		else:
+
 			self.display.blit(self.musicOff, (screenWidth // 2, 30))
 
 		if(soundStatus):
+
 			self.display.blit(self.soundOn, (screenWidth // 2 + 80, 30))
+
 		else:
+
 			self.display.blit(self.soundOff, (screenWidth // 2 + 80, 30))
+
+		if(self.player.health > 50):
+
+			self.display.blit(self.health, (screenWidth // 20, screenHeight - 100))
+			self.drawText(f'{self.player.health}', 28, (0, 0, 0), screenWidth // 16, screenHeight - 75)
+
+		else:
+
+			self.display.blit(self.damagedHealth, (screenWidth // 20, screenHeight - 100))
+			self.drawText(f'{self.player.health}', 28, (0, 0, 0), screenWidth // 16, screenHeight - 75)
+
+		self.drawText(f'Ammo: {self.player.ammo}', 38, (0, 0, 0), screenWidth // 1.3, screenHeight - 75)
 
 	def drawWorld(self, worldObjects):
 		for obj in sorted(worldObjects, key = lambda n : n[0], reverse = True):
@@ -346,6 +367,11 @@ class Render():
 	def drawText(self, text : str, size : int, color : tuple, x : int, y : int):
 		image = pygame.font.SysFont('System', size, bold = True).render(text, True, color)
 		self.display.blit(image, (x, y))
+
+	def drawCrosshair(self):
+		image = loadGameImage('sprites/crosshair/model/crosshair.png')
+		imageRect = image.get_rect()
+		self.display.blit(image, ((screenWidth // 2) - imageRect.width // 2, int(screenHeight / 2.4)))
 
 	def drawMiniMap(self, player, sprites):
 		self.miniMap.fill((0, 0, 0))
@@ -425,7 +451,7 @@ class Sprite():
 				'animationSpeed': 0,
 				'collision': True,
 				'sideCollision': 40,
-				'type': 'decoration',
+				'type': 'ammo_barrel',
 				'action': [],
 
 			},
@@ -675,6 +701,10 @@ class Player():
 		self.sensitvity = 0.004
 		self.sideCollision = 50
 		self.rect = pygame.Rect(*playerPosition, self.sideCollision, self.sideCollision)
+
+		self.health = 100
+		self.ammo = 8
+
 		self.shot = False
 
 	@property
@@ -787,9 +817,10 @@ class Player():
 				
 			if(event.type == pygame.MOUSEBUTTONDOWN):
 
-				if(event.button == True and not self.shot):
+				if(event.button == True and not self.shot and self.ammo > 0):
 
 					self.shot = True
+					self.ammo -= 1
 
 	def handleMouse(self):
 		if(pygame.mouse.get_focused()):
@@ -820,6 +851,8 @@ class Interaction():
 							object.isDead = True
 							object.collision = False
 							self.render.shotgunAnimationTrigger = False
+							if(object.type == 'ammo_barrel'):
+								self.player.ammo += 3
 
 					break
 
