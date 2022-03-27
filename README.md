@@ -1,3 +1,5 @@
+<h1 align="center">Python Raycasting:</h1><br>
+
 <details>
   <summary>Table of Contents: </summary>
   <ol>
@@ -49,12 +51,10 @@ To be able to run the Python Raycasting Engine you need to have a few Python lib
    ```
 2. Install all necessary libraries:
 
-  ```sh
-  pip install pygame
-  pip install numba
-  ```
-
-
+    ```sh
+    pip install pygame
+    pip install numba
+    ```
 
 ## License:
 
