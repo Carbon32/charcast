@@ -20,7 +20,7 @@
 
 ## About:
 
-<img src = "https://i.imgur.com/s8qezO5.png" width = 1000 height = 700>
+<img src = "https://i.imgur.com/liV51d4.png" width = 900 height = 700>
 
 This is a Python Raycasting Engine, made in pure Python. The engine is able to handle a lot of tasks including: 
 
