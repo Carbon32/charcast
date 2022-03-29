@@ -31,7 +31,6 @@ mixer.init()
 
 screenWidth = 1200
 screenHeight = 800
-engineRunning = True
 fpsHandler = pygame.time.Clock()
 
 # Player:
