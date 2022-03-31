@@ -473,24 +473,6 @@ class Sprite():
 
 			},
 
-			'monster': 
-			{
-				'sprite': loadGameImage('sprites/monster/model/0.png'),
-				'viewAngles': False,
-				'height': 0.0,
-				'scale': (3.5, 2.5),
-				'animation': [],
-				'deathAnimation': loadAnimation('sprites/monster/death/'),
-				'isDead': None,
-				'animationDistance': 0,
-				'animationSpeed': 3,
-				'collision': True,
-				'sideCollision': 60,
-				'type': 'npc',
-				'action': loadAnimation('sprites/monster/model/'),
-
-			},
-
 			'ufo': 
 			{
 				'sprite': loadGameImage('sprites/ufo/model/0.png'),
@@ -518,7 +500,6 @@ class Sprite():
             Object(self.spriteParameters['troll'], (14.8, 2.40)),
             Object(self.spriteParameters['ufo'], (14.8, 2.40)),
             Object(self.spriteParameters['ufo'], (17.30, 3.49)),
-            Object(self.spriteParameters['monster'], (16.99, 1.41)),
 
 		]
 
@@ -929,7 +910,7 @@ class Menu():
 	def handleMenu(self, musicStatus : bool, soundStatus : bool):
 		if(self.menuStatus):
 
-			self.display.blit(resizeImage(loadGameImage('textures/wall.jpg'), (screenWidth, screenHeight)), (0, 0))
+			self.display.blit(resizeImage(loadGameImage('textures/wall3.jpg'), (screenWidth, screenHeight)), (0, 0))
 
 			if(musicStatus):
 
