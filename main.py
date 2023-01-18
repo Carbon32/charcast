@@ -1,129 +1,59 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#													   		#
-#			     Python Raycasting (Remake)	  		  		#
-#			          Developer: Carbon				        #
-#													   		#
-#														    #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#                                                           #
+#                     Python Raycasting                     #
+#                     Developer: Carbon                     #
+#                                                           #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Imports: #
 
-from engine import *
+from src.engine import *
 
-# Sprites: #
-
-sprites = Sprite()
-
-# Player: #
-
-player = Player(sprites)
-
-# Draw Elements: #
-
-render = Render(window, miniMap, player)
-
-# Game Status: #
+# Game: #
 
 game = Game()
 
-# Menu: #
+# Window: #
 
-menu = Menu(window)
+game.start_window()
 
-# Walls: #
+# Map: #
 
-walls = Walls()
+game_map = Map(game)
 
-# Interaction: #
+# Player: #
 
-interaction = Interaction(player, sprites, render)
+game.player = Player(game)
 
-# Sounds: #
+# Object Renderer: #
 
-sounds = Sounds()
-sounds.playMusic()
+object_renderer = ObjectRenderer(game)
+
+# Raycasting: #
+
+raycasting =  Raycasting(game, object_renderer)
+
+# Pathfinding: #
+
+pathfinding = Pathfinding(game)
+
+# Sprite Handler: #
+
+sprites_handler = SpritesHandler(game, pathfinding)
+
+# Weapon: #
+
+weapon = Weapon(game, 'assets/sprites/weapon/shotgun/0.png', 0.4, 90)
 
 # Game Loop: #
 
-def main():
-	while(game.engineRunning):
+while(game.engine_running):
+    sprites_handler.update()
+    object_renderer.draw()
+    weapon.draw()
+    weapon.update()
+    game.player.update(weapon)
+    game_map.draw_map()
+    raycasting.update()
+    game.update_display(60)
 
-		# Clear Window:
-
-		clearWindow(window)
-
-		# User Interface: 
-
-		render.drawUI(sounds.musicStatus, sounds.soundStatus)
-
-		# Menu: 
-
-		if(menu.menuStatus):
-			menu.handleMenu(sounds.musicStatus, sounds.soundStatus)
-			if(menu.playButton.render(window)):
-
-				menu.menuStatus = False
-				toggleMouseCursorOff()
-
-			if(menu.exitButton.render(window)):
-
-				game.engineRunning = False
-
-			if(menu.musicButton.render(window)):
-
-				if(sounds.musicStatus):
-
-					sounds.musicStatus = False
-					stopMusic()
-
-				else:
-
-					sounds.musicStatus = True
-					sounds.playMusic()
-
-			if(menu.soundButton.render(window)):
-
-				if(sounds.soundStatus):
-
-					sounds.soundStatus = False
-
-				else:
-
-					sounds.soundStatus = True
-
-		else:
-
-			# Update Walls:
-
-			walls.updateWalls(player.position, player.angle, render.textures, worldMap)
-
-			# Rendering: 
-
-			render.drawBackground(player.angle)
-			render.drawFloor((80, 80, 80))
-			render.drawWorld(walls.wallStatus() + [object.locateObject(player) for object in sprites.objectsList])
-			render.drawText(str(int(fpsHandler.get_fps())), 40, (255, 0, 0), 1150, 30)
-			render.drawMiniMap(player, sprites)
-			render.drawPlayerWeapon([walls.shotWalls(), sprites.spriteShot], sounds.soundStatus)
-			render.drawUI(sounds.musicStatus, sounds.soundStatus)
-			render.drawCrosshair()
-
-			# Game Interaction: 
-
-			interaction.interactionObject()
-			interaction.npcAction()
-			menu.checkMenu()
-
-			# Movement:
-
-			player.handleControl()
-
-		# Update Display:
-		
-		updateDisplay(60)
-
-	# Quit:
-
-	destroyGame()
-
-main()
