@@ -22,15 +22,15 @@ class Map():
 
         _ = False
         self.game.mini_map = [
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, _, _, 2, _, _, _, 2, _, _, _, _, _, _, _, 1],
+            [1, _, _, 2, _, _, _, 2, _, _, _, _, _, _, _, 1],
+            [1, _, _, 2, _, _, _, 2, _, _, _, _, _, _, _, 1],
             [1, _, _, _, _, _, _, _, _, _, _, _, _, _, _, 1],
-            [1, _, _, _, _, _, _, _, _, _, _, _, _, 2, _, 1],
-            [1, _, _, _, _, 2, _, _, _, _, _, _, _, 2, _, 1],
-            [2, _, _, _, _, 2, _, _, _, _, _, _, _, 2, _, 1],
-            [1, _, _, _, _, 2, 2, 2, 2, _, _, _, _, 2, _, 1],
-            [1, _, _, _, _, _, _, _, 2, _, 2, 2, 2, 2, _, 1],
-            [1, _, _, _, _, _, _, _, 2, _, _, _, _, _, _, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, _, _, 2, _, _, _, 2, _, _, _, _, _, _, _, 1],
+            [1, _, _, 2, _, _, _, 2, _, _, _, _, _, _, _, 1],
+            [1, _, _, 2, _, _, _, 2, _, _, _, _, _, _, _, 1],
+            [1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 
         ]
 
@@ -45,6 +45,10 @@ class Map():
                     self.game.world_map[(i, j)] = value
 
     def draw_map(self):
+        for j, row in enumerate(self.game.mini_map):
+            for i, value in enumerate(row):
+                pygame.draw.rect(self.game.display, (0, 0, 0), (i * (self.game.screen_width // 80), j * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)))
+
         for position in self.game.world_map:
-            pass
-            # pygame.draw.rect(self.game.display, (255, 255, 255), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 100), (self.game.screen_width // 100)), 2)
+            pygame.draw.rect(self.game.display, (205, 92, 92), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)))
+            pygame.draw.rect(self.game.display, (255, 255, 255), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)), self.game.screen_width // 512)

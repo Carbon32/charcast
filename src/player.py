@@ -25,8 +25,8 @@ class Player():
         self.player_speed = 0.004
         self.player_rotation_speed = 0.002
         self.player_size = 60
-        self.player_max_health = 100
-        self.health = self.player_max_health
+        self.max_health = 100
+        self.health = self.max_health
         self.rel = 0
 
         # Shooting:
@@ -102,12 +102,21 @@ class Player():
         self.rel = max(-self.mouse_max_rel, min(self.mouse_max_rel, self.rel))
         self.player_angle += self.rel * self.mouse_sensitivity * self.game.delta_time
 
+    def show_health_bar(self):
+        pygame.draw.rect(self.game.display, (250, 0, 0), (self.game.screen_width // 4, self.game.screen_height // 64, (self.game.screen_width // 5), self.game.screen_width // 80), border_radius = self.game.screen_width // 128)
+        pygame.draw.rect(self.game.display, (0, 250, 0), (self.game.screen_width // 4, self.game.screen_height // 64, (self.game.screen_width // 5) * (self.health / self.max_health), self.game.screen_width // 80), border_radius = self.game.screen_width // 128)
+        pygame.draw.rect(self.game.display, (0, 0, 0), (self.game.screen_width // 4, self.game.screen_height // 64, (self.game.screen_width // 5), self.game.screen_width // 80), self.game.screen_width // (self.game.screen_width // 4), border_radius = self.game.screen_width // 128)
+
+    def show_map_dot(self):
+        pygame.draw.circle(self.game.display, (135, 206, 235), (self.x * (self.game.screen_width // 80), self.y * (self.game.screen_width // 80)), (self.game.screen_width // (self.game.screen_width // 5)))
+
     def update(self, weapon):
         self.weapon = weapon
         self.move()
         self.check_shooting(weapon)
         self.mouse_control()
-        print(self.health)
+        self.show_health_bar()
+        self.show_map_dot()
 
     @property
     def position(self):

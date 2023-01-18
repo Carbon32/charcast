@@ -15,3 +15,4 @@ from src.raycasting import *
 from src.renderer import *
 from src.sprites import *
 from src.pathfinding import *
+from src.crosshair import *

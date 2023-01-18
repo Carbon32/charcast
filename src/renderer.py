@@ -24,18 +24,18 @@ class ObjectRenderer():
 
 		# Sky:
 
-		self.sky_image = self.load_texture('assets/sky/sky.png', (self.game.screen_width, self.game.screen_height // 2))
+		self.roof_image = self.load_texture('assets/roof/roof.png', (self.game.screen_width, self.game.screen_height // 2))
 		self.roof_offset = 0
 
-	def draw(self):
+	def render(self):
 		self.render_floor((30, 30, 30))
-		self.render_roof()
+		self.render_roof(self.roof_image)
 		self.render_objects()
 
-	def render_roof(self):
+	def render_roof(self, image):
 		self.roof_offset = (self.roof_offset + 4.0 * self.game.player.rel) % self.game.screen_width
-		self.game.display.blit(self.sky_image, (-self.roof_offset, 0))
-		self.game.display.blit(self.sky_image, (-self.roof_offset + self.game.screen_width, 0))
+		self.game.display.blit(image, (-self.roof_offset, 0))
+		self.game.display.blit(image, (-self.roof_offset + self.game.screen_width, 0))
 
 	def render_floor(self, color):
 		pygame.draw.rect(self.game.display, color, (0, self.game.screen_height // 2, self.game.screen_width, self.game.screen_height))	

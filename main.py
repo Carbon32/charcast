@@ -43,17 +43,23 @@ sprites_handler = SpritesHandler(game, pathfinding)
 
 # Weapon: #
 
-weapon = Weapon(game, 'assets/sprites/weapon/shotgun/0.png', 0.4, 90)
+weapon = Weapon(game, 'assets/sprites/weapon/shotgun/0.png', 1.5, 90)
+
+# Crosshair: #
+
+crosshair = Crosshair(game)
 
 # Game Loop: #
 
 while(game.engine_running):
     sprites_handler.update()
-    object_renderer.draw()
+    object_renderer.render()
+    crosshair.render()
+    game_map.draw_map()
+    sprites_handler.show_npc_dots()
     weapon.draw()
     weapon.update()
     game.player.update(weapon)
-    game_map.draw_map()
     raycasting.update()
     game.update_display(60)
 

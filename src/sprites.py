@@ -291,7 +291,7 @@ class Weapon(AnimatedSprite):
 		self.reloading = False
 		self.number_of_images = len(self.images)
 		self.frame_counter = 0
-		self.damage = 25
+		self.damage = 50
 
 	def animate_shot(self):
 		if(self.reloading):
@@ -336,19 +336,27 @@ class SpritesHandler():
 
 		# Game Sprites:
 
-		add_sprite(StaticSprite(game, 'assets/sprites/static/test/1.png', (8, 4.5), 0.7, 0.27))
-		add_sprite(AnimatedSprite(game, 'assets/sprites/animated/test/0.png', (11.5, 3.5), 0.8, 0.15, 50))
+		add_sprite(StaticSprite(game, 'assets/sprites/static/corpse/1.png', (5.5, 1.5), 0.7, -0.2))
+		add_sprite(StaticSprite(game, 'assets/sprites/static/corpse_2/1.png', (5.5, 7.5), 1.0, 0.2))
+		add_sprite(AnimatedSprite(game, 'assets/sprites/animated/barrel/0.png', (4.5, 1.5), 0.8, 0.15, 140))
+		add_sprite(AnimatedSprite(game, 'assets/sprites/animated/barrel/0.png', (6.75, 1.5), 0.8, 0.15, 140))
 
 		# Game NPCs:
 
-		add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (9.0, 4.5), 0.6, 0.38))
-		add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (10.5, 5.5), 0.6, 0.38))
+		add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (5.5, 2.0), 0.6, 0.38))
+		add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (5.0, 6.0), 0.6, 0.38))
 
 	def update(self):
 		self.game.npc_positions = {npc.map_position for npc in self.npc_list if npc.alive}
 		[sprite.update() for sprite in self.sprite_list]
 		[npc.update() for npc in self.npc_list]
+		self.show_npc_dots()
 
+	def show_npc_dots(self):
+		for npc in self.npc_list:
+			if(npc.alive):
+				pygame.draw.circle(self.game.display, (255, 0, 0), (npc.x * (self.game.screen_width // 80), npc.y * (self.game.screen_width // 80)), (self.game.screen_width // (self.game.screen_width // 5)))
+	
 	def add_npc(self, npc):
 		self.npc_list.append(npc)
 
