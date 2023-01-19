@@ -33,7 +33,7 @@ class Player():
 
         self.shot = False
         self.shooting_timer = pygame.time.get_ticks()
-        self.shooting_cooldown = 1000
+        self.shooting_cooldown = 0
 
         # Mouse Movement:
 
@@ -117,6 +117,7 @@ class Player():
         self.mouse_control()
         self.show_health_bar()
         self.show_map_dot()
+        self.shooting_cooldown = weapon.reload_speed * 1000
 
     @property
     def position(self):

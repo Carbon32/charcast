@@ -278,7 +278,7 @@ class NPC(AnimatedSprite):
 # Weapon: #
 
 class Weapon(AnimatedSprite):
-	def __init__(self, game, path, scale, animation_time):
+	def __init__(self, game, path, scale, animation_time, damage, reload_speed):
 		super().__init__(game = game, path = path, scale = scale, animation_time = animation_time)
 
 		# Properties:
@@ -287,11 +287,13 @@ class Weapon(AnimatedSprite):
 			[pygame.transform.smoothscale(image, (int(self.image.get_width() * scale), int(self.image.get_height() * scale)))
 			for image in self.images]
 		)
-		self.weapon_position = ((self.game.screen_width // 2) - self.images[0].get_width() // 2, self.game.screen_height - self.images[0].get_height())
+		self.x = (self.game.screen_width // 2) - self.images[0].get_width() // 2
+		self.y = self.game.screen_height - self.images[0].get_height()
 		self.reloading = False
+		self.reload_speed = reload_speed
 		self.number_of_images = len(self.images)
 		self.frame_counter = 0
-		self.damage = 50
+		self.damage = damage
 
 	def animate_shot(self):
 		if(self.reloading):
@@ -305,7 +307,7 @@ class Weapon(AnimatedSprite):
 					self.frame_counter = 0
 
 	def draw(self):
-		self.game.display.blit(self.images[0], self.weapon_position)
+		self.game.display.blit(self.images[0], (self.x, self.y))
 
 	def update(self):
 		self.check_animation_time()
