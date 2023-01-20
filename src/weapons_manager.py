@@ -23,6 +23,7 @@ class WeaponsManager():
         self.weapons = weapons
         self.current_weapon_id = 0
         self.current_weapon = weapons[self.current_weapon_id]
+        self.current_weapon.y = self.game.screen_height - self.current_weapon.images[0].get_height()
 
         # Animation:
 

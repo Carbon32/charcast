@@ -149,6 +149,7 @@ class NPC(AnimatedSprite):
 
 	def attack(self):
 		if(self.animation_trigger):
+			self.game.sounds.play_sound('enemy_shoot', 0.2)
 			if(random.random() < self.accuracy):
 				self.game.player.damage(self.attack_damage)
 
@@ -164,6 +165,7 @@ class NPC(AnimatedSprite):
 	def animate_pain(self):
 		self.animate(self.pain_images)
 		if(self.animation_trigger):
+			self.game.sounds.play_sound('enemy_pain', 0.2)
 			self.pain = False
 
 	def animate_death(self):
@@ -184,6 +186,7 @@ class NPC(AnimatedSprite):
 	def check_health(self):
 		if(self.health < 1):
 			self.alive = False
+			self.game.sounds.play_sound('enemy_death', 0.2)
 
 	def update_ai(self):
 		if(self.alive):
@@ -278,7 +281,7 @@ class NPC(AnimatedSprite):
 # Weapon: #
 
 class Weapon(AnimatedSprite):
-	def __init__(self, game, path, scale, animation_time, damage, reload_speed):
+	def __init__(self, game, path, scale, animation_time, damage, reload_speed, sound):
 		super().__init__(game = game, path = path, scale = scale, animation_time = animation_time)
 
 		# Properties:
@@ -294,6 +297,7 @@ class Weapon(AnimatedSprite):
 		self.number_of_images = len(self.images)
 		self.frame_counter = 0
 		self.damage = damage
+		self.sound = sound
 
 	def animate_shot(self):
 		if(self.reloading):

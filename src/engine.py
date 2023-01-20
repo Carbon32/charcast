@@ -17,3 +17,6 @@ from src.sprites import *
 from src.pathfinding import *
 from src.crosshair import *
 from src.weapons_manager import *
+from src.menu import *
+from src.fade import *
+from src.sounds import *
