@@ -75,6 +75,10 @@ class Game():
     def set_game_started(self):
         self.game_started = True
 
+    def draw_custom_text(self, font, text, color, x, y):
+        image = font.render(text, True, color)
+        self.display.blit(image, (x, y))
+
     def show_damage(self):
         if(self.player.damaged):
             effect = min(255, max(0, round(255 * (1 - self.damage_list[self.player.health // 10]))))

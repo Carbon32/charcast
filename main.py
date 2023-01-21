@@ -42,6 +42,10 @@ menu = Menu(game)
 
 start_fade = Fade(game, 1, ((0, 0, 0)))
 
+# Music: #
+
+sounds.play_music('sounds/music.mp3', 1)
+
 # Game Loop: #
 
 while(game.engine_running):

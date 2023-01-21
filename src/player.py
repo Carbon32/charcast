@@ -54,7 +54,7 @@ class Player():
         if(pygame.time.get_ticks() - self.shooting_timer > self.shooting_cooldown and not weapon.reloading):
             if(pygame.mouse.get_pressed()[0] == 1 and self.shot == False and not weapon.reloading):
                 self.shot = True
-                self.game.sounds.play_sound(self.weapon.sound, 0.5)
+                self.game.sounds.play_sound(self.weapon.sound, 0.2)
                 self.shooting_timer = pygame.time.get_ticks()
                 weapon.reloading = True
 
@@ -71,7 +71,7 @@ class Player():
         if(self.health > 1):
             self.health -= damage
             self.damaged = True
-            self.game.sounds.play_sound('pain', 0.5)
+            self.game.sounds.play_sound('pain', 0.2)
         else:
             self.health = 0
             self.alive = False

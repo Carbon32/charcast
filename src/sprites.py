@@ -149,7 +149,7 @@ class NPC(AnimatedSprite):
 
 	def attack(self):
 		if(self.animation_trigger):
-			self.game.sounds.play_sound('enemy_shoot', 0.2)
+			self.game.sounds.play_sound('enemy_shoot', 0.1)
 			if(random.random() < self.accuracy):
 				self.game.player.damage(self.attack_damage)
 
@@ -165,7 +165,7 @@ class NPC(AnimatedSprite):
 	def animate_pain(self):
 		self.animate(self.pain_images)
 		if(self.animation_trigger):
-			self.game.sounds.play_sound('enemy_pain', 0.2)
+			self.game.sounds.play_sound('enemy_pain', 0.1)
 			self.pain = False
 
 	def animate_death(self):
@@ -186,7 +186,7 @@ class NPC(AnimatedSprite):
 	def check_health(self):
 		if(self.health < 1):
 			self.alive = False
-			self.game.sounds.play_sound('enemy_death', 0.2)
+			self.game.sounds.play_sound('enemy_death', 0.1)
 
 	def update_ai(self):
 		if(self.alive):
@@ -194,7 +194,7 @@ class NPC(AnimatedSprite):
 			self.check_if_shot()
 			if(self.pain):
 				self.animate_pain()
-			elif(self.raycast_value):
+			elif(self.raycast_value or self.game.player.shot == True):
 				self.search_for_player = True
 				if(self.dist < self.attack_dist):
 					self.animate(self.attack_images)
