@@ -23,8 +23,8 @@ game.start_window()
 
 # Weapon: #
 
-primary_weapon = Weapon(game, 'assets/sprites/weapon/handgun/0.png', 6.2, 50, 25, 0.3, 'handgun')
-secondary_weapon = Weapon(game, 'assets/sprites/weapon/shotgun/0.png', 1.5, 90, 50, 1, 'shotgun')
+primary_weapon = Weapon(game, 'assets/sprites/weapon/handgun/0.png', 6.2, 50, 25, 0.3, 'handgun', (game.screen_width // 32, game.screen_height // 16))
+secondary_weapon = Weapon(game, 'assets/sprites/weapon/shotgun/0.png', 1.5, 90, 50, 1, 'shotgun',  (game.screen_width // 4, game.screen_height // 4))
 
 # Weapons Manager: #
 

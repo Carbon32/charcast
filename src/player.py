@@ -112,9 +112,6 @@ class Player():
         self.check_wall_collision(delta_x, delta_y)
         self.player_angle %= math.tau
 
-    def draw_player(self):
-        pygame.draw.circle(self.game.display, (0, 0, 255), (self.x * 100, self.y * 100), 15)
-
     def detect_collision(self, x, y):
         return (x, y) not in self.game.world_map
 

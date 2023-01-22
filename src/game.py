@@ -65,7 +65,7 @@ class Game():
         }
 
     def start_window(self):
-        self.display = pygame.display.set_mode((self.screen_width, self.screen_height))
+        self.display = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.FULLSCREEN | pygame.DOUBLEBUF)
         pygame.display.set_caption('Python Raycasting: ')
         self.engine_running = True
 
