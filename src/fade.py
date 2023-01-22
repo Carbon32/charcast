@@ -22,7 +22,7 @@ class Fade():
 
         self.direction = direction
         self.color = color
-        self.speed = self.game.screen_width // 128
+        self.speed = self.game.screen_width // 32
         self.fade_counter = 0
         self.fade_completed = False
 

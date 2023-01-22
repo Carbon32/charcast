@@ -66,7 +66,7 @@ To be able to run Python Raycasting, you need to have Pygame installed on your c
 
 Changes made on: 01/22/2023
 
-* Added bigger map.
+* Changed fade speed
 
 ## License:
 
