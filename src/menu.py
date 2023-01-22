@@ -29,7 +29,10 @@ class Menu():
             'music_on' : pygame.transform.scale(pygame.image.load('assets/Buttons/music_on.png'), (self.game.screen_width // 64, self.game.screen_width // 64)),
             'music_off' : pygame.transform.scale(pygame.image.load('assets/Buttons/music_off.png'), (self.game.screen_width // 64, self.game.screen_width // 64)),
             'sound_on' : pygame.transform.scale(pygame.image.load('assets/Buttons/sound_on.png'), (self.game.screen_width // 64, self.game.screen_width // 64)),
-            'sound_off' : pygame.transform.scale(pygame.image.load('assets/Buttons/sound_off.png'), (self.game.screen_width // 64, self.game.screen_width // 64))
+            'sound_off' : pygame.transform.scale(pygame.image.load('assets/Buttons/sound_off.png'), (self.game.screen_width // 64, self.game.screen_width // 64)),
+            'map_on' : pygame.transform.scale(pygame.image.load('assets/Buttons/map_on.png'), (self.game.screen_width // 64, self.game.screen_width // 64)),
+            'map_off' : pygame.transform.scale(pygame.image.load('assets/Buttons/map_off.png'), (self.game.screen_width // 64, self.game.screen_width // 64))
+
         }
 
         # Buttons:
@@ -39,6 +42,7 @@ class Menu():
         self.back_button = Button(self.game, 'Back', self.game.screen_width // 2 - (self.game.screen_width // 64),  self.game.screen_height // 3 + (self.game.screen_height // 2), self.game.screen_width // 14, self.game.screen_width // 20, self.game.screen_width // 256, 'small')
         self.music_button = ButtonImage(self.game.display, self.buttons["music_on"], self.game.screen_width // 2 + (self.game.screen_width // 2.3), self.game.screen_height // 2 - (self.game.screen_height // 2.1), self.game.screen_width // 32, self.game.screen_width // 32, self.game.screen_width // 256, self.game.screen_width // 64)
         self.sound_button = ButtonImage(self.game.display, self.buttons["sound_on"], self.game.screen_width // 2 + (self.game.screen_width // 2.8), self.game.screen_height // 2 - (self.game.screen_height // 2.1), self.game.screen_width // 32, self.game.screen_width // 32, self.game.screen_width // 256, self.game.screen_width // 64)
+        self.map_button = ButtonImage(self.game.display, self.buttons["map_on"], self.game.screen_width // 2 + (self.game.screen_width // 2.3), self.game.screen_height // 2 - (self.game.screen_height // 2.6), self.game.screen_width // 32, self.game.screen_width // 32, self.game.screen_width // 256, self.game.screen_width // 64)
 
         # Title:
 
@@ -79,6 +83,14 @@ class Menu():
                 else:
                     self.sound_button.change_button(self.buttons["sound_on"])
                     self.game.sounds.sound_status = True
+
+            if(self.map_button.render()):
+                if(self.game.map_status):
+                    self.map_button.change_button(self.buttons["map_off"])
+                    self.game.map_status = False
+                else:
+                    self.map_button.change_button(self.buttons["map_on"])
+                    self.game.map_status = True
 
             if(self.game.game_started):
                 self.play_button.change_text('large', 'Restart')

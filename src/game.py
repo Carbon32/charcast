@@ -32,6 +32,7 @@ class Game():
 
         # World Map:
 
+        self.map_status = True
         self.world_map = {}
 
         # Objects:
@@ -56,18 +57,15 @@ class Game():
 
         self.damage_list = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0]
 
-        # Fonts:
-
+    def start_window(self):
+        self.display = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.FULLSCREEN | pygame.DOUBLEBUF)
+        pygame.display.set_caption('Python Raycasting: ')
+        self.engine_running = True
         self.fonts = {
             'huge' : pygame.font.Font(os.getcwd() + '/game_font.ttf', self.screen_width // 14),
             'large' : pygame.font.Font(os.getcwd() + '/game_font.ttf', self.screen_width // 20),
             'small' : pygame.font.Font(os.getcwd() + '/game_font.ttf', self.screen_width // 48)
         }
-
-    def start_window(self):
-        self.display = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.FULLSCREEN | pygame.DOUBLEBUF)
-        pygame.display.set_caption('Python Raycasting: ')
-        self.engine_running = True
 
     def toggle_mouse(self):
         pygame.mouse.set_visible(False)

@@ -138,7 +138,8 @@ class Player():
         pygame.draw.rect(self.game.display, (0, 0, 0), (self.game.screen_width // 4, self.game.screen_height // 64, (self.game.screen_width // 5), self.game.screen_width // 80), self.game.screen_width // (self.game.screen_width // 4), border_radius = self.game.screen_width // 128)
 
     def show_map_dot(self):
-        pygame.draw.circle(self.game.display, (135, 206, 235), (self.x * (self.game.screen_width // 80), self.y * (self.game.screen_width // 80)), (self.game.screen_width // (self.game.screen_width // 5)))
+        if(self.game.map_status):
+            pygame.draw.circle(self.game.display, (135, 206, 235), (self.x * (self.game.screen_width // 80), self.y * (self.game.screen_width // 80)), (self.game.screen_width // (self.game.screen_width // 5)))
 
     def update(self, weapon):
         self.weapon = weapon

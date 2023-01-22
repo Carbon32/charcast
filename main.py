@@ -17,6 +17,24 @@ sounds = Sounds()
 
 game = Game(sounds)
 
+# Resolution: #
+
+resolution = Resolution(game)
+
+# Resoltuion Selection: #
+
+while(resolution.resolution_status):
+    resolution.update_background()
+    if(resolution.resolution_a.render()):
+        resolution.set_resolution(1280, 720)
+        break
+
+    if(resolution.resolution_b.render()):
+        resolution.set_resolution(1920, 1080)
+        break
+
+    resolution.update_window()
+
 # Window: #
 
 game.start_window()

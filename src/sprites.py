@@ -359,9 +359,10 @@ class SpritesHandler():
         self.show_npc_dots()
 
     def show_npc_dots(self):
-        for npc in self.npc_list:
-            if(npc.alive):
-                pygame.draw.circle(self.game.display, (255, 0, 0), (npc.x * (self.game.screen_width // 80), npc.y * (self.game.screen_width // 80)), (self.game.screen_width // (self.game.screen_width // 5)))
+        if(self.game.map_status):
+            for npc in self.npc_list:
+                if(npc.alive):
+                    pygame.draw.circle(self.game.display, (255, 0, 0), (npc.x * (self.game.screen_width // 80), npc.y * (self.game.screen_width // 80)), (self.game.screen_width // (self.game.screen_width // 5)))
     
     def add_npc(self, npc):
         self.npc_list.append(npc)

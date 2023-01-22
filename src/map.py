@@ -45,10 +45,11 @@ class Map():
                     self.game.world_map[(i, j)] = value
 
     def draw_map(self):
-        for j, row in enumerate(self.game.mini_map):
-            for i, value in enumerate(row):
-                pygame.draw.rect(self.game.display, (0, 0, 0), (i * (self.game.screen_width // 80), j * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)))
+        if(self.game.map_status):
+            for j, row in enumerate(self.game.mini_map):
+                for i, value in enumerate(row):
+                    pygame.draw.rect(self.game.display, (0, 0, 0), (i * (self.game.screen_width // 80), j * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)))
 
-        for position in self.game.world_map:
-            pygame.draw.rect(self.game.display, (205, 92, 92), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)))
-            pygame.draw.rect(self.game.display, (255, 255, 255), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)), self.game.screen_width // 512)
+            for position in self.game.world_map:
+                pygame.draw.rect(self.game.display, (205, 92, 92), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)))
+                pygame.draw.rect(self.game.display, (255, 255, 255), (position[0] * (self.game.screen_width // 80), position[1] * (self.game.screen_width // 80), (self.game.screen_width // 80), (self.game.screen_width // 80)), self.game.screen_width // 512)
