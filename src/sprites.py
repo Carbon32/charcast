@@ -351,6 +351,9 @@ class SpritesHandler():
 
         add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (5.5, 2.0), 0.6, 0.38))
         add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (5.0, 6.0), 0.6, 0.38))
+        add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (10.0, 2.0), 0.6, 0.38))
+        add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (10.0, 7.0), 0.6, 0.38))
+        add_npc(NPC(game, pathfinding, 'assets/sprites/npc/soldier/0.png', (13.0, 7.0), 0.6, 0.38))
 
     def update(self):
         self.game.npc_positions = {npc.map_position for npc in self.npc_list if npc.alive}
