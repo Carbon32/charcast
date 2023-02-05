@@ -22,7 +22,7 @@
 
 ## About:
 
-<img src = "https://i.imgur.com/xr0xQkf.png" width = 900 height = 700>
+<img src = "https://i.imgur.com/xr0xQkf.png" width = 100% height = 100%>
 
 This is a Python Raycasting Engine, made in pure Python. The engine is able to handle a lot of tasks including: 
 
@@ -64,9 +64,9 @@ To be able to run Python Raycasting, you need to have Pygame installed on your c
 
 ## Changelog:
 
-Changes made on: 01/22/2023
+Changes made on: 02/05/2023
 
-* Changed fade speed
+* Better documentation
 
 ## License:
 
