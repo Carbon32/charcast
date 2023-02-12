@@ -37,7 +37,7 @@ and so on).
 * Collision.
 * And a few more minor features...
 
-This project is no longer in-development.
+This project is no longer in-development. But that doesn't mean it won't receive some updates. 
 
 ## Installation:
 
@@ -64,7 +64,7 @@ To be able to run Python Raycasting, you need to have Pygame installed on your c
 
 ## Changelog:
 
-Changes made on: 02/05/2023
+Changes made on: 02/12/2023
 
 * Better documentation
 
